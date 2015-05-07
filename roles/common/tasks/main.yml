@@ -1,0 +1,7 @@
+---
+- debug: var=hostvars[inventory_hostname]
+
+- name: Register RHN
+  when: ansible_distribution == 'RedHat'
+  sudo: yes
+  redhat_subscription: state=present username={{ rhn_user }} password={{ rhn_password }} autosubscribe=true
