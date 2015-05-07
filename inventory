@@ -1,2 +1,5 @@
 [hackday]
 rhel7-base.igsp.duke.edu
+
+[vmware]
+rhel7-base.igsp.duke.edu

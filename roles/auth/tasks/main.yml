@@ -1,0 +1,22 @@
+---
+
+- name: Install auth packages
+  #TODO separate into yum and apt for distros
+  yum: name={{ item }}
+  with_items:
+    - sssd
+    - openldap-clients
+    - nscd
+    - nss-pam-ldapd
+    - krb5-workstation
+    - sssd-krb5
+    - pam_krb5
+
+- name: Setup auth
+  command: >
+     authconfig --enableldap --enablesssd --enablekrb5
+     --krb5kdc=kaserv1.acpub.duke.edu:88 
+     --krb5adminserver=kaserv1.acpub.duke.edu:749
+     --enablelocauthorize --enableshadow --passalgo=md5
+     --ldapserver=ldaps001.igsp.duke.edu
+     --ldapbasedn='dc=cagp,du=duke,dc=edu' --enableldaptls

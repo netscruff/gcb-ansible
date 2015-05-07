@@ -1,7 +1,32 @@
 ---
 - debug: var=hostvars[inventory_hostname]
 
+- include_vars: rhn_credentials.yml
+
 - name: Register RHN
   when: ansible_distribution == 'RedHat'
   sudo: yes
-  redhat_subscription: state=present username={{ rhn_user }} password={{ rhn_password }} autosubscribe=true
+  redhat_subscription: state=present username={{ rhn.username }} password={{ rhn.password }} autosubscribe=true
+
+- name: Package update
+  when: ansible_os_family == 'RedHat'
+  sudo: yes
+  yum: name=* state=latest
+
+- name: Install base packages
+  sudo: yes
+  yum: name={{ item }}
+  with_items: base_packages
+
+- name: Reboot
+  sudo: yes
+  shell: "sleep 1 && shutdown -r now 'Ansible updates triggered'"
+  async: 1
+  poll: 0
+  ignore_errors: true
+
+- name: Waiting for server to come back
+  local_action: wait_for delay=15 host={{ inventory_hostname }}
+                state=started port=22
+
+- debug: msg="System {{ inventory_hostname }} has come back from reboot"

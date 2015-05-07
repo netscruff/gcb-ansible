@@ -3,12 +3,3 @@
 - hosts: hackday
   roles:
     - common
-
-  vars_prompt:
-    - name: "rhn_user"
-      prompt: "Enter your RHN login user name"
-      private: no
-
-    - name: "rhn_password"
-      prompt: "Enter your RHN password"
-      private: yes
