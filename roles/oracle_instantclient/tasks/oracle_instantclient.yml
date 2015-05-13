@@ -1,8 +1,11 @@
 # Assumes instant client zip files are in {{ instantclient_zips }} on host machine
 ---
-- name: Install unzip
+- name: Install packages
   when: ansible_os_family == 'RedHat'
-  yum: name=unzip
+  yum: name={{ item }}
+  with_items:
+    - unzip
+    - libaio
 
 - name: Extract oracle instant client for x86_64
   unarchive: src={{ instantclient_zips }}/{{ item.key }}.x64-{{ instantclient_version }}.zip
@@ -31,5 +34,6 @@
 - copy: src=oracle.sh dest=/etc/profile.d/oracle.sh
 
 - copy: src=oracle.conf dest=/etc/ld.so.conf.d/oracle.conf
+  notify: Reload shared libraries
 
 - template: src=tnsnames.ora.j2 dest=/usr/local/lib/instantclient/network/admin/tnsnames.ora

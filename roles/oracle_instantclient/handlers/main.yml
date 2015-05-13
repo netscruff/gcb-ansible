@@ -1,0 +1,4 @@
+---
+- name: Reload shared libraries
+  command: ldconfig
+  sudo: yes
