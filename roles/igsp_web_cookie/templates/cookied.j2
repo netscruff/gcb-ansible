@@ -1,0 +1,68 @@
+#!/bin/bash
+# DO NOT CHANGE THIS FILE, IT IS UNDER ANSIBLE!!!
+#       /etc/rc.d/init.d/cookied
+# cookied  This shell script takes care of starting and stopping
+#               {{ daemon_name }} (the IGSPnet cookie daemon)
+#
+# Author: Rob Wagner, Darin London
+#
+# chkconfig: 35 20 80
+# description: {{ daemon_name }} is the service that connects to IGSPnet \
+# and is used by verifyCookie to communicate with Oracle.
+#
+# known bug: hangs ssh on exit (https://bugzilla.mindrot.org/show_bug.cgi?id=52)
+
+# Source function library.
+. /etc/init.d/functions
+
+COOKIEDAEMON_DIR=/var/system/{{ system_name }}
+
+start() {
+        echo -n "Starting IGSPnet {{ daemon_name }}: "
+        PID=`pgrep {{ daemon_name }}`
+        if [[ ! -z $PID ]]; then
+                echo {{ daemon_name }} already running: $PID
+                exit 2;
+        else
+                cd $COOKIEDAEMON_DIR
+                if [ ! -e "$COOKIEDAEMON_DIR/{{ daemon_name }}" ]; then
+                   echo {{ daemon_name }} not found
+                   exit 2;
+                fi
+                DAEMON_USER=`ls -l "$COOKIEDAEMON_DIR/{{ daemon_name }}" | awk '{print $3;}'`
+                daemon --user=$DAEMON_USER "$COOKIEDAEMON_DIR/{{ daemon_name }} &"
+                RETVAL=$?
+                echo
+                [ $RETVAL -eq 0 ] && touch /var/lock/subsys/{{ daemon_name }}
+                return $RETVAL
+        fi
+
+}
+
+stop() {
+        echo -n "Shutting down IGSPnet {{ daemon_name }}: "
+        echo
+        killproc {{ daemon_name }}
+        echo
+        rm -f /var/lock/subsys/{{ daemon_name }}
+        return 0
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    *)
+        echo "Usage:  {start|stop|restart}"
+        exit 1
+        ;;
+esac
+exit $?
+

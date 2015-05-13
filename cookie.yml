@@ -2,4 +2,4 @@
 # file: cookie.yml
 - hosts: cookiedev
   roles:
-    - oracle_instantclient
+    - igsp_web_cookie

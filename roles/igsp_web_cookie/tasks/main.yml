@@ -1,0 +1,34 @@
+---
+- name: Install packages
+  when: ansible_os_family == 'RedHat'
+  sudo: yes
+  yum: name={{ item }}
+  with_items:
+    - git
+    - gcc-c++
+    - make
+    - openssl-devel
+    - openssl
+
+- name: Make directory for code and set ownership
+  file: path={{ igsp_web_cookie.dest }}
+        mode=0755
+        state=directory
+        owner={{ ansible_user_id }}
+  sudo: yes
+
+# Clone git repo
+- name: Clone igsp_web_cookie
+  git: repo={{ igsp_web_cookie.repo }}
+       dest={{ igsp_web_cookie.dest }}/igsp_web_cookie
+       version={{ igsp_web_cookie.version }}
+
+# Build
+- name: Build igsp_web_cookie
+  command: make chdir={{ igsp_web_cookie.dest }}/igsp_web_cookie creates={{ igsp_web_cookie.dest }}/igsp_web_cookie/bin/verifyCookie
+
+# place binaries (sudo make install)
+# Remove repo
+# make config file
+# place init script
+# start script
