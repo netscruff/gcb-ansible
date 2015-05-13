@@ -1,0 +1,35 @@
+# Assumes instant client zip files are in {{ instantclient_zips }} on host machine
+---
+- name: Install unzip
+  when: ansible_os_family == 'RedHat'
+  yum: name=unzip
+
+- name: Extract oracle instant client for x86_64
+  unarchive: src={{ instantclient_zips }}/{{ item.key }}.x64-{{ instantclient_version }}.zip
+             dest=/usr/local/lib/
+             creates=/usr/local/lib/instantclient_11_2/{{ item.value }}
+  with_dict: instantclient_creates
+  when: ansible_architecture == "x86_64"
+
+- name: Extract oracle instant client for i386
+  unarchive: src={{ instantclient_zips }}/{{ item.key }}-{{ instantclient_version }}.zip
+             dest=/usr/local/lib/
+             creates=/usr/local/lib/instantclient_11_2/{{ item.value }}
+  with_dict: instantclient_creates
+  when: ansible_architecture == "i386"
+
+- name: Symlink instantclient
+  file: path=/usr/local/lib/instantclient src=/usr/local/lib/instantclient_11_2 state=link
+
+- file: path=/usr/local/lib/instantclient/{{ item.key }} src=/usr/local/lib/instantclient/{{ item.value }} state=link
+  with_dict:
+    libclntsh.so: libclntsh.so.11.1
+    libocci.so: libocci.so.11.1
+
+- file: path=/usr/local/lib/instantclient/network/admin state=directory
+
+- copy: src=oracle.sh dest=/etc/profile.d/oracle.sh
+
+- copy: src=oracle.conf dest=/etc/ld.so.conf.d/oracle.conf
+
+- template: src=tnsnames.ora.j2 dest=/usr/local/lib/instantclient/network/admin/tnsnames.ora

@@ -1,0 +1,10 @@
+{% for service in oracle_services %}
+{{ service.name | upper }} =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = {{ service.host }})(PORT = {{ service.port | default(1521) }}))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = {{ service.service_name }} )
+    )
+  )
+{% endfor %}

@@ -1,0 +1,5 @@
+---
+# file: cookie.yml
+- hosts: cookiedev
+  roles:
+    - oracle_instantclient

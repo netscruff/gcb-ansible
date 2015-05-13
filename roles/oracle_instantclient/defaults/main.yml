@@ -1,0 +1,19 @@
+---
+instantclient_zips: /nfs/admin/itlab/dba/instaclient
+instantclient_version: "11.2.0.3.0"
+instantclient_creates:
+  instantclient-sqlplus-linux: sqlplus
+  instantclient-sdk-linux: sdk
+  instantclient-basic-linux: BASIC_README
+
+oracle_services:
+  - name: dev1
+    host: oracle-prod003.igsp.duke.edu
+    service_name: dev1.igsp.duke.edu
+  - name: test1
+    host: oracle-prod003.igsp.duke.edu
+    service_name: test1.igsp.duke.edu
+  - name: GCBDEV.WORLD
+    host: gcb-db-dev-01.oit.duke.edu
+    port: 1781
+    service_name: GCBDEV
