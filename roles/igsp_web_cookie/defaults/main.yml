@@ -13,3 +13,11 @@ cookied_conf: # This must be overridden, override should be in vault!
   db_pass: pass
   private_key_path: /var/system/cookied/key.pem
   cert_path: /var/system/cookied/cert.pem
+cookied_privatekey: |
+  -----BEGIN RSA PRIVATE KEY-----
+  ...
+  -----END RSA PRIVATE KEY-----
+cookied_cert: |
+  -----BEGIN CERTIFICATE-----
+  ...
+  -----END CERTIFICATE-----
