@@ -28,12 +28,24 @@
   command: make chdir={{ igsp_web_cookie.dest }}/igsp_web_cookie
                 creates={{ igsp_web_cookie.dest }}/igsp_web_cookie/bin/verifyCookie
 
+# Create & set ownership on install dir
+- name: Create install dir
+  file: path={{ igsp_web_cookie.install_dir }}
+        mode=0755
+        state=directory
+        owner={{ igsp_web_cookie.owner }}
+  sudo: yes
+
 # place binaries (sudo make install)
 - name: Install binaries
   command: make install prefix={{ igsp_web_cookie.install_dir }} chdir={{ igsp_web_cookie.dest }}/igsp_web_cookie
            creates={{ igsp_web_cookie.install_dir }}/verifyCookie
-  sudo: yes
 
+# Place certificate and key
 # make config file
+- name: Generate config file
+  template: src=cookied.conf.j2 dest={{ igsp_web_cookie.install_dir }}{{ igsp_web_cookie.conf_file }} owner={{ igsp_web_cookie.owner }} mode=0400
+
+# update environment variables
 # place init script
 # start script
