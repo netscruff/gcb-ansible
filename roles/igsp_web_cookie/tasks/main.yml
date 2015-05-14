@@ -60,6 +60,15 @@
             dest={{ igsp_web_cookie.install_dir }}/{{ igsp_web_cookie.conf_file }}
             owner={{ igsp_web_cookie.owner }} mode=0400
 
-# update environment variables
+# update environment variables?
 # place init script
-# start script
+- name: Generate init script
+  template: src=cookied.j2
+            dest=/etc/init.d/cookied
+            mode=0755
+  sudo: yes
+
+# Enable/start service
+- name: Enable cookied service
+  service: name=cookied enabled=yes state=started
+  sudo: yes

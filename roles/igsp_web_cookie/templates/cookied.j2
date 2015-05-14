@@ -1,13 +1,12 @@
 #!/bin/bash
-# DO NOT CHANGE THIS FILE, IT IS UNDER ANSIBLE!!!
-#       /etc/rc.d/init.d/cookied
-# cookied  This shell script takes care of starting and stopping
-#               {{ daemon_name }} (the IGSPnet cookie daemon)
 #
-# Author: Rob Wagner, Darin London
+# cookied  This shell script takes care of starting and stopping
+#               cookieDaemon (the IGSPnet cookie daemon)
+#
+# Authors: Rob Wagner, Darren Boss, Dan Leehr
 #
 # chkconfig: 35 20 80
-# description: {{ daemon_name }} is the service that connects to IGSPnet \
+# description: cookieDaemon is the service that connects to IGSPnet \
 # and is used by verifyCookie to communicate with Oracle.
 #
 # known bug: hangs ssh on exit (https://bugzilla.mindrot.org/show_bug.cgi?id=52)
@@ -15,37 +14,47 @@
 # Source function library.
 . /etc/init.d/functions
 
-COOKIEDAEMON_DIR=/var/system/{{ system_name }}
+COOKIEDAEMON_DIR="{{ igsp_web_cookie.install_dir }}"
+DAEMON_USER={{ igsp_web_cookie.owner }}
 
 start() {
-        echo -n "Starting IGSPnet {{ daemon_name }}: "
-        PID=`pgrep {{ daemon_name }}`
+        echo -n "Starting IGSPnet cookieDaemon: "
+        PID=`pgrep -f cookieDaemon`
         if [[ ! -z $PID ]]; then
-                echo {{ daemon_name }} already running: $PID
+                echo cookieDaemon already running: $PID
                 exit 2;
         else
                 cd $COOKIEDAEMON_DIR
-                if [ ! -e "$COOKIEDAEMON_DIR/{{ daemon_name }}" ]; then
-                   echo {{ daemon_name }} not found
+                export COOKIE_DAEMON_CONFIG="{{ igsp_web_cookie.install_dir }}/{{ igsp_web_cookie.conf_file }}"
+                if [ ! -e "$COOKIEDAEMON_DIR/cookieDaemon" ]; then
+                   echo cookieDaemon not found
                    exit 2;
                 fi
-                DAEMON_USER=`ls -l "$COOKIEDAEMON_DIR/{{ daemon_name }}" | awk '{print $3;}'`
-                daemon --user=$DAEMON_USER "$COOKIEDAEMON_DIR/{{ daemon_name }} &"
+                daemon --user=$DAEMON_USER "$COOKIEDAEMON_DIR/cookieDaemon &"
                 RETVAL=$?
                 echo
-                [ $RETVAL -eq 0 ] && touch /var/lock/subsys/{{ daemon_name }}
+                [ $RETVAL -eq 0 ] && touch /var/lock/subsys/cookieDaemon
                 return $RETVAL
         fi
 
 }
 
 stop() {
-        echo -n "Shutting down IGSPnet {{ daemon_name }}: "
+        echo -n "Shutting down IGSPnet cookieDaemon: "
         echo
-        killproc {{ daemon_name }}
+        killproc cookieDaemon
         echo
-        rm -f /var/lock/subsys/{{ daemon_name }}
+        rm -f /var/lock/subsys/cookieDaemon
         return 0
+}
+
+status() {
+	if [ -e /var/lock/subsys/cookieDaemon ]
+		then
+			echo "IGSPnet cookieDaemon is running."
+		else
+      echo "IGSPnet cookieDaemon is not running."
+	fi
 }
 
 case "$1" in
@@ -59,10 +68,12 @@ case "$1" in
         stop
         start
         ;;
+    status)
+	status
+	;;
     *)
-        echo "Usage:  {start|stop|restart}"
+        echo "Usage:  {start|stop|restart|status}"
         exit 1
         ;;
 esac
 exit $?
-
