@@ -3,3 +3,4 @@ igsp_web_cookie:
   repo: https://github.com/Duke-GCB/igsp_web_cookie.git
   dest: /opt/code/
   version: master
+  install_dir: /var/system/cookied/

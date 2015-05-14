@@ -25,10 +25,15 @@
 
 # Build
 - name: Build igsp_web_cookie
-  command: make chdir={{ igsp_web_cookie.dest }}/igsp_web_cookie creates={{ igsp_web_cookie.dest }}/igsp_web_cookie/bin/verifyCookie
+  command: make chdir={{ igsp_web_cookie.dest }}/igsp_web_cookie
+                creates={{ igsp_web_cookie.dest }}/igsp_web_cookie/bin/verifyCookie
 
 # place binaries (sudo make install)
-# Remove repo
+- name: Install binaries
+  command: make install prefix={{ igsp_web_cookie.install_dir }} chdir={{ igsp_web_cookie.dest }}/igsp_web_cookie
+           creates={{ igsp_web_cookie.install_dir }}/verifyCookie
+  sudo: yes
+
 # make config file
 # place init script
 # start script
