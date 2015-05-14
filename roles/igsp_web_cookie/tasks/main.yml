@@ -46,17 +46,19 @@
   copy: content="{{ cookied_privatekey }}"
         dest="{{ cookied_conf.private_key_path }}"
         owner="{{ igsp_web_cookie.owner }}"
-        mode=600
+        mode=400
 
 - name: Place cookied certificate
   copy: content="{{ cookied_cert }}"
         dest="{{ cookied_conf.cert_path }}"
         owner="{{ igsp_web_cookie.owner }}"
-        mode=600
+        mode=400
 
 # make config file
 - name: Generate config file
-  template: src=cookied.conf.j2 dest={{ igsp_web_cookie.install_dir }}{{ igsp_web_cookie.conf_file }} owner={{ igsp_web_cookie.owner }} mode=0400
+  template: src=cookied.conf.j2
+            dest={{ igsp_web_cookie.install_dir }}/{{ igsp_web_cookie.conf_file }}
+            owner={{ igsp_web_cookie.owner }} mode=0400
 
 # update environment variables
 # place init script
