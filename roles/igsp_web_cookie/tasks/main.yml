@@ -11,22 +11,22 @@
     - openssl
 
 - name: Make directory for code and set ownership
-  file: path={{ igsp_web_cookie.dest }}
+  file: path="{{ igsp_web_cookie.dest }}"
         mode=0755
         state=directory
-        owner={{ ansible_user_id }}
+        owner="{{ ansible_user_id }}"
   sudo: yes
 
 # Clone git repo
 - name: Clone igsp_web_cookie
-  git: repo={{ igsp_web_cookie.repo }}
-       dest={{ igsp_web_cookie.dest }}/igsp_web_cookie
-       version={{ igsp_web_cookie.version }}
+  git: repo="{{ igsp_web_cookie.repo }}"
+       dest="{{ igsp_web_cookie.dest }}/igsp_web_cookie"
+       version="{{ igsp_web_cookie.version }}"
 
 # Build
 - name: Build igsp_web_cookie
-  command: make chdir={{ igsp_web_cookie.dest }}/igsp_web_cookie
-                creates={{ igsp_web_cookie.dest }}/igsp_web_cookie/bin/verifyCookie
+  command: make chdir="{{ igsp_web_cookie.dest }}/igsp_web_cookie"
+                creates="{{ igsp_web_cookie.dest }}/igsp_web_cookie/bin/verifyCookie"
 
 # Create & set ownership on install dir
 - name: Create install dir
@@ -38,8 +38,8 @@
 
 # place binaries (sudo make install)
 - name: Install binaries
-  command: make install prefix={{ igsp_web_cookie.install_dir }} chdir={{ igsp_web_cookie.dest }}/igsp_web_cookie
-           creates={{ igsp_web_cookie.install_dir }}/verifyCookie
+  command: make install prefix={{ igsp_web_cookie.install_dir }} chdir="{{ igsp_web_cookie.dest }}/igsp_web_cookie"
+           creates="{{ igsp_web_cookie.install_dir }}/verifyCookie"
 
 # Place key and certificate
 - name: Place cookied private key
@@ -57,10 +57,10 @@
 # make config file
 - name: Generate config file
   template: src=cookied.conf.j2
-            dest={{ igsp_web_cookie.install_dir }}/{{ igsp_web_cookie.conf_file }}
-            owner={{ igsp_web_cookie.owner }} mode=0400
+            dest="{{ igsp_web_cookie.install_dir }}/{{ igsp_web_cookie.conf_file }}"
+            owner="{{ igsp_web_cookie.owner }}"
+            mode=0400
 
-# update environment variables?
 # place init script
 - name: Generate init script
   template: src=cookied.j2
