@@ -1,11 +1,6 @@
 ---
 instantclient_zips: /nfs/admin/itlab/dba/instaclient
 instantclient_version: "11.2.0.3.0"
-instantclient_creates:
-  instantclient-sqlplus-linux: sqlplus
-  instantclient-sdk-linux: sdk
-  instantclient-basic-linux: BASIC_README
-
 oracle_services:
   - name: dev1
     host: oracle-prod003.igsp.duke.edu
