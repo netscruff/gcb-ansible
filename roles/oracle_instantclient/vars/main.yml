@@ -1,0 +1,5 @@
+---
+instantclient_creates:
+  instantclient-sqlplus-linux: sqlplus
+  instantclient-sdk-linux: sdk
+  instantclient-basic-linux: BASIC_README
