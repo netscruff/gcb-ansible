@@ -7,4 +7,5 @@
     - cookieprod
     - cookietest
   roles:
+    - oracle_instantclient
     - igsp_web_cookie
