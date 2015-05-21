@@ -1,0 +1,11 @@
+---
+# file: cookie-legacy.yml
+# Playbook for installing igsp_web_cookie (cookieDaemon, verifyCookie, and signCookie)
+# On hosts that already have oracle or instantclient
+# group_vars for cookiedev hosts are encrypted - include database connection and cert/key
+- hosts:
+    - cookiedev_legacy
+    - cookieprod_legacy
+    - cookietest_legacy
+  roles:
+    - igsp_web_cookie
