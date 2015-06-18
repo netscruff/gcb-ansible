@@ -14,7 +14,7 @@
   file: path="{{ igsp_web_cookie.dest }}"
         mode=0755
         state=directory
-        owner="{{ ansible_user_id }}"
+        owner="{{ igsp_web_cookie.owner }}"
   sudo: yes
 
 # Clone git repo
@@ -54,12 +54,18 @@
         owner="{{ igsp_web_cookie.owner }}"
         mode=400
 
-# make config file
+# make config file - group specific
 - name: Generate config file
   template: src=cookied.conf.j2
-            dest="{{ igsp_web_cookie.install_dir }}/{{ igsp_web_cookie.conf_file }}"
+            dest="{{ cookied_conf.conf_file_path }}"
             owner="{{ igsp_web_cookie.owner }}"
             mode=0400
+
+# Symlink config file
+- name: Symlink config file
+  file: src="{{ cookied_conf.conf_file_path }}"
+        dest="{{ igsp_web_cookie.install_dir }}/{{ igsp_web_cookie.conf_file }}"
+        state=link
 
 # place init script
 - name: Generate init script
