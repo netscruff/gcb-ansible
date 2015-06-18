@@ -8,7 +8,7 @@ igsp_web_cookie:
   conf_file_name: cookied.conf
   owner: "{{ igsp_web_cookie_owner }}" # for overriding without hash_merge
 cookied_conf: # This must be overridden, override should be in vault!
-  conf_dir: /var/ystem/cookied/dev-gcb
+  conf_dir: /var/system/cookied/dev-gcb
   socket_file_name: cookieDaemon.sock
   db_conn_string: //127.0.0.1:1521/SID
   db_user: user
