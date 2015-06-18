@@ -4,16 +4,16 @@ igsp_web_cookie:
   dest: /opt/code/
   version: master
   install_dir: /var/system/cookied
-  conf_file: cookied.conf
+  conf_file_name: cookied.conf
   owner: "{{ ansible_user_id }}"
 cookied_conf: # This must be overridden, override should be in vault!
-  conf_file_path: /var/system/cookied/dev-gcb/cookied.conf
-  socket_path: /var/system/cookied/cookieDaemon.sock
+  conf_dir: /var/ystem/cookied/dev-gcb
+  socket_file_name: cookieDaemon.sock
   db_conn_string: //127.0.0.1:1521/SID
   db_user: user
   db_pass: pass
-  private_key_path: /var/system/cookied/dev-gcb/key.pem
-  cert_path: /var/system/cookied/dev-gcb/cert.pem
+  private_key_file_name: key.pem
+  cert_file_name: cert.pem
 cookied_privatekey: |
   -----BEGIN RSA PRIVATE KEY-----
   ...

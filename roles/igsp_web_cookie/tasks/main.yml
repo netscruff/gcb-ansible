@@ -41,30 +41,37 @@
   command: make install prefix={{ igsp_web_cookie.install_dir }} chdir="{{ igsp_web_cookie.dest }}/igsp_web_cookie"
            creates="{{ igsp_web_cookie.install_dir }}/verifyCookie"
 
+# Make config dir
+- name: Make configuration dir
+  file: path={{ cookied_conf.conf_dir }}
+        state=directory
+        owner="{{ igsp_web_cookie.owner }}"
+        mode=700
+
 # Place key and certificate
 - name: Place cookied private key
   copy: content="{{ cookied_privatekey }}"
-        dest="{{ cookied_conf.private_key_path }}"
+        dest="{{ cookied_conf.conf_dir }}{{ cookied_conf.private_key_file_name }}"
         owner="{{ igsp_web_cookie.owner }}"
         mode=400
 
 - name: Place cookied certificate
   copy: content="{{ cookied_cert }}"
-        dest="{{ cookied_conf.cert_path }}"
+        dest="{{ cookied_conf.conf_dir }}/{{ cookied_conf.cert_file_name }}"
         owner="{{ igsp_web_cookie.owner }}"
         mode=400
 
 # make config file - group specific
 - name: Generate config file
   template: src=cookied.conf.j2
-            dest="{{ cookied_conf.conf_file_path }}"
+            dest="{{ cookied_conf.conf_dir }}/{{ igsp_web_cookie.conf_file_name }}"
             owner="{{ igsp_web_cookie.owner }}"
             mode=0400
 
 # Symlink config file
 - name: Symlink config file
-  file: src="{{ cookied_conf.conf_file_path }}"
-        dest="{{ igsp_web_cookie.install_dir }}/{{ igsp_web_cookie.conf_file }}"
+  file: src="{{ cookied_conf.conf_dir }}/{{ igsp_web_cookie.conf_file_name }}"
+        dest="{{ igsp_web_cookie.install_dir }}/{{ igsp_web_cookie.conf_file_name }}"
         state=link
 
 # place init script
