@@ -1,6 +1,7 @@
 ---
 # Legacy hosts don't get instantclient installed
 - hosts:
-    - cookie_dev_legacy
+    - cookie_dev_oit
+    - cookie_dev_gcb
   roles:
     - igsp_web_cookie

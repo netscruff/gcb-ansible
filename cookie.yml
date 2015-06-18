@@ -1,11 +1,10 @@
 ---
 # file: cookie.yml
 # Playbook for installing igsp_web_cookie (cookieDaemon, verifyCookie, and signCookie)
-# group_vars for cookiedev hosts are encrypted - include database connection and cert/key
+# group_vars for hosts are encrypted - include database connection and cert/key
 - hosts:
-    - cookiedev
-    - cookieprod
-    - cookietest
+    - cookie_dev_oit
+    - cookie_dev_gcb
   roles:
     - oracle_instantclient
     - igsp_web_cookie

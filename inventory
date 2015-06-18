@@ -4,9 +4,9 @@ rhel7-base.igsp.duke.edu
 [vmware]
 rhel7-base.igsp.duke.edu
 
-[cookiedev]
+# Hosts that should be configured for cookied with OIT's oracle server
+[cookie_dev_oit]
 127.0.0.1:2222
 
-# Hosts that shall receive cookied but already have oracle installed
-[cookie_dev_legacy]
-127.0.0.1:2222
+
+[cookie_dev_gcb]
