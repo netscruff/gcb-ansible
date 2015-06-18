@@ -1,11 +1,12 @@
 ---
+igsp_web_cookie_owner: "{{ ansible_user_id }}"
 igsp_web_cookie:
   repo: https://github.com/Duke-GCB/igsp_web_cookie.git
   dest: /opt/code/
   version: master
   install_dir: /var/system/cookied
   conf_file_name: cookied.conf
-  owner: "{{ ansible_user_id }}"
+  owner: "{{ igsp_web_cookie_owner }}" # for overriding without hash_merge
 cookied_conf: # This must be overridden, override should be in vault!
   conf_dir: /var/ystem/cookied/dev-gcb
   socket_file_name: cookieDaemon.sock
