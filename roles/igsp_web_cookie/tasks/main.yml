@@ -3,6 +3,7 @@
   when: ansible_os_family == 'RedHat'
   sudo: yes
   yum: name={{ item }}
+       state=latest
   with_items:
     - git
     - gcc-c++
