@@ -31,7 +31,11 @@
 
 - file: path=/usr/local/lib/instantclient/network/admin state=directory
 
-- copy: src=oracle.sh dest=/etc/profile.d/oracle.sh
+- name: Set ORACLE_HOME
+  lineinfile: dest=/etc/environment line='export ORACLE_HOME=/usr/local/lib/instantclient'
+
+- name: Set TNS_ADMIN
+  lineinfile: dest=/etc/environment line='export TNS_ADMIN=/usr/local/lib/instantclient'
 
 - copy: src=oracle.conf dest=/etc/ld.so.conf.d/oracle.conf
   notify: Reload shared libraries
