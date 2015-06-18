@@ -52,7 +52,7 @@
 # Place key and certificate
 - name: Place cookied private key
   copy: content="{{ cookied_privatekey }}"
-        dest="{{ cookied_conf.conf_dir }}{{ cookied_conf.private_key_file_name }}"
+        dest="{{ cookied_conf.conf_dir }}/{{ cookied_conf.private_key_file_name }}"
         owner="{{ igsp_web_cookie.owner }}"
         mode=400
 
