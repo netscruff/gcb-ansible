@@ -6,3 +6,7 @@ rhel7-base.igsp.duke.edu
 
 [cookiedev]
 127.0.0.1:2222
+
+# Hosts that shall receive cookied but already have oracle installed
+[cookie_dev_legacy]
+127.0.0.1:2222
