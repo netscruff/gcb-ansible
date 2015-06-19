@@ -8,6 +8,7 @@ rhel7-base.igsp.duke.edu
 [cookie_dev_oit]
 web-dev2.igsp.duke.edu
 microarray_shoppe-web-dev002.igsp.duke.edu
+proteomics_shoppe-web-dev002.igsp.duke.edu
 
 [cookie_dev_gcb]
 
