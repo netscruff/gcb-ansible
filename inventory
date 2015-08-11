@@ -6,9 +6,9 @@ rhel7-base.igsp.duke.edu
 
 # Hosts that should be configured for cookied with OIT's oracle server
 [cookie_dev_oit]
+web-dev2.igsp.duke.edu
 
 [cookie_dev_gcb]
-web-dev2.igsp.duke.edu
 microarray_shoppe-web-dev002.igsp.duke.edu
 proteomics_shoppe-web-dev002.igsp.duke.edu
 
