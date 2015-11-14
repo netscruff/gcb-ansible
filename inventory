@@ -6,3 +6,6 @@ rhel7-base.igsp.duke.edu
 
 [cookiedev]
 127.0.0.1:2222
+
+[lsrc-test]
+lsrc-compute-1-[0:15].genome.duke.edu

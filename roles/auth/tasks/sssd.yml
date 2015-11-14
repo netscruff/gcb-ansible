@@ -1,0 +1,36 @@
+---
+# file: roles/auth/tasks/main.yml
+#
+- include_vars: idms_authdir.yml
+
+- name: Install auth packages
+  yum: name={{ item }}
+  when: ansible_distribution == 'RedHat'
+  with_items:
+    - sssd
+    #- openldap-clients
+    #- nscd
+    #- nss-pam-ldapd
+    #- krb5-workstation
+    #- sssd-krb5
+    - sssd-tools
+    #- pam_krb5
+
+- name: Install sssd package
+  apt: name={{ item }} state=present update_cache=yes cache_valid_time=3600
+  when: ansible_distribution == 'Ubuntu'
+  with_items:
+   - sssd
+   - sssd-tools
+
+- name: Setup auth
+  command: >
+     authconfig --enablesssd --enablesssdauth --disableldap
+     --disableldapauth --disablekrb5 --update
+
+- name: Configure sssd
+  template: src=sssd.conf.j2 dest=/etc/sssd/sssd.conf owner=root group=root mode=0600
+  notify: restart sssd
+
+- name: Start sssd service
+  service: name=sssd state=started enabled=true

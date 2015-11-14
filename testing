@@ -1,0 +1,5 @@
+[test]
+lsrc-compute-1-0.genome.duke.edu
+
+[lsrc-test]
+lsrc-compute-1-[0:15].genome.duke.edu
