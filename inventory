@@ -20,3 +20,6 @@ web-prod10.igsp.duke.edu
 [cookie_dev_gcb]
 
 [cookie_prod_gcb]
+
+[docker]
+colab-sbx-58.oit.duke.edu
