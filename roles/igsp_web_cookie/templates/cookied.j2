@@ -25,7 +25,7 @@ start() {
                 exit 2;
         else
                 cd $COOKIEDAEMON_DIR
-                export COOKIE_DAEMON_CONFIG="{{ igsp_web_cookie.install_dir }}/{{ igsp_web_cookie.conf_file }}"
+                export COOKIE_DAEMON_CONFIG="{{ igsp_web_cookie.install_dir }}/{{ igsp_web_cookie.conf_file_name }}"
                 if [ ! -e "$COOKIEDAEMON_DIR/cookieDaemon" ]; then
                    echo cookieDaemon not found
                    exit 2;

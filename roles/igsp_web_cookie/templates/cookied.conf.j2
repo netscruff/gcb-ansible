@@ -1,7 +1,6 @@
-SOCKET_PATH {{ cookied_conf.socket_path }}
+SOCKET_PATH {{ cookied_conf.conf_dir }}/{{ cookied_conf.socket_file_name }}
 DB_CONN_STRING {{ cookied_conf.db_conn_string }}
 DB_USER {{ cookied_conf.db_user }}
 DB_PASS {{ cookied_conf.db_pass }}
-PRIVATE_KEY_PATH {{ cookied_conf.private_key_path }}
-CERT_PATH {{ cookied_conf.cert_path }}
-
+PRIVATE_KEY_PATH {{ cookied_conf.conf_dir }}/{{ cookied_conf.private_key_file_name }}
+CERT_PATH {{ cookied_conf.conf_dir }}/{{ cookied_conf.cert_file_name }}
