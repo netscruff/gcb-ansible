@@ -1,0 +1,5 @@
+# This playbook requires the angstwad.docker_ubuntu role
+- name: Configure docker-volume-netshare
+  hosts: docker
+  roles:
+    - docker_volume_netshare

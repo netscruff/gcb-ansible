@@ -1,0 +1,8 @@
+---
+- name: Download docker-volume-netshare Debian package
+  get_url:
+    url="{{ docker_volume_netshare.baseurl }}/{{ docker_volume_netshare.package }}_{{ docker_volume_netshare.version }}_{{ docker_volume_netshare.arch }}.deb"
+    dest="/home/{{ ansible_env.USER }}/{{ docker_volume_netshare.package }}_{{ docker_volume_netshare.version }}_{{ docker_volume_netshare.arch }}.deb"
+- name: Install docker-volume-netshore Debian
+  apt: deb="/home/{{ ansible_env.USER }}/{{ docker_volume_netshare.package }}_{{ docker_volume_netshare.version }}_{{ docker_volume_netshare.arch }}.deb"
+  sudo: true
