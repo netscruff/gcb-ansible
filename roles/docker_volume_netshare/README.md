@@ -40,9 +40,11 @@ Once the service has been installed, it will respond to `docker volume` commands
 
 # Notes / Caveats
 
-Tested with CIFS only. Places CIFS mount credentials in /.netrc on the host. So you should assume that users with docker access on hte host can read your credentials file.
+Tested with CIFS only. Places CIFS mount credentials in /.netrc on the host. So you should assume that users with docker access on the host can read your credentials file.
 
-Characters in the password that would need to be escaped on the command-line (e.g. `$` or `%` do need to be escaped in the .netrc file. [GitHub issue](https://github.com/gondor/docker-volume-netshare/issues/18)
+Characters in the password that would need to be escaped on the command-line (e.g. `$` or `%` do need to be escaped in the .netrc file. [GitHub issue](https://github.com/gondor/docker-volume-netshare/issues/18). To achieve the correct amount of escaping, characters in an ansible vars file should be escaped with two backslashes: `$` becomes `\\$` and `%` becomes `\\%`.
+
+When docker-volume-netshare mounts a CIFS volume, the files will likely owned by root (uid 0). This ownership and permission cascades into the docker container, so if your docker container runs as a non-root user, it may be unable to write to the volume.
 
 The docker-volume-netshare plugin documentation indicates that credentials could be provided at time of volume creation, but we have not had success here. This would be preferrable for recommending to users.
 
