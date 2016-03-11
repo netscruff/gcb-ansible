@@ -4,3 +4,9 @@ docker_volume_netshare:
   package: "docker-volume-netshare"
   version: "0.11"
   arch: "amd64"
+  user: "docker"
+  mode: "cifs"
+netrc:
+  machine: ""
+  username: ""
+  password: ""
