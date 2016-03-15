@@ -1,5 +1,6 @@
 ---
 # file: site.yml
-- hosts: hackday
+- hosts: ssh 
   roles:
-    - common
+#    - role: common
+  - role: sshd

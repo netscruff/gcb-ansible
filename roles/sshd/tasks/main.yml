@@ -1,0 +1,18 @@
+---
+
+- name: Disable X Forwarding
+  become: yes
+  become_method: sudo
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    state: absent
+    regexp: "^X11Forwarding"
+  register: xdisable
+
+- name: Restart sshd
+  become: yes
+  become_method: sudo
+  service:
+    name: sshd
+    state: reloaded
+  when: xdisable|changed

@@ -23,3 +23,21 @@ web-prod10.igsp.duke.edu
 
 [docker]
 colab-sbx-58.oit.duke.edu
+
+[duotest]
+colab-sbx-214.oit.duke.edu  ansible_user=bitnami
+
+[ssh]
+hardac-sm.genome.duke.edu
+hardac-xfer.genome.duke.edu
+wraylab01.genome.duke.edu
+aspirin-challenge.genome.duke.edu
+web-prod10.igsp.duke.edu
+web-dev2.igsp.duke.edu
+web-prod1.igsp.duke.edu
+web-prod3.igsp.duke.edu
+web-prod6.igsp.duke.edu
+web-prod7.igsp.duke.edu
+web-prod11.igsp.duke.edu
+
+

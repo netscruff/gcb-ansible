@@ -3,23 +3,42 @@
 
 - include_vars: rhn_credentials.yml
 
+- name: duke-centos-oit install
+  become: yes
+  become_method: sudo
+  copy: src=duke-centos-oit.repo
+        dest=/etc/yum.repos.d/
+        owner=root group=root mode=0644
+
+- name: duke repository enable
+  become: yes
+  become_method: sudo
+  ini_file: dest=/etc/yum.repos.d/duke-centos-oit.repo
+            section=duke-centos-oit
+            option=enabled
+            value=1
+
 - name: Register RHN
   when: ansible_distribution == 'RedHat'
-  sudo: yes
-  redhat_subscription: state=present username={{ rhn.username }} password={{ rhn.password }} autosubscribe=true
+  become: yes
+  become_method: sudo
+  rhn_register: state=present username={{ rhn.username }} password={{ rhn.password }}
 
 - name: Package update
   when: ansible_os_family == 'RedHat'
-  sudo: yes
+  become: yes
+  become_method: sudo
   yum: name=* state=latest
 
 - name: Install base packages
-  sudo: yes
+  become: yes
+  become_method: sudo
   yum: name={{ item }}
   with_items: base_packages
 
 - name: Reboot
-  sudo: yes
+  become: yes
+  become_method: sudo
   shell: "sleep 1 && shutdown -r now 'Ansible updates triggered'"
   async: 1
   poll: 0
