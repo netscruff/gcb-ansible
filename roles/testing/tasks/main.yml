@@ -1,8 +1,6 @@
 ---
 - debug: var=hostvars[inventory_hostname]
 
-- include_vars: rhn_credentials.yml
-
 - name: duke-centos-oit install
   become: yes
   become_method: sudo
@@ -17,13 +15,12 @@
         dest=/etc/yum.repos.d/
         owner=root group=root mode=0644
 
-- name: duke repository enable
+- name: gcb gpfs repo
   become: yes
   become_method: sudo
-  ini_file: dest=/etc/yum.repos.d/duke-centos-oit.repo
-            section=duke-centos-oit
-            option=enabled
-            value=1
+  copy: src=gcb.repo
+        dest=/etc/yum.repos.d/
+        owner=root group=root mode=0644
 
 - name: CentOS base enable
   become: yes
@@ -49,38 +46,34 @@
             option=enabled
             value=1
 
-- name: Register RHN
-  when: ansible_distribution == 'Red Hat Enterprise Linux'
+- name: gcb gpfs enable
   become: yes
   become_method: sudo
-  rhn_register: state=present username={{ rhn.username }} password={{ rhn.password }}
+  ini_file: dest=/etc/yum.repos.d/gcb.repo
+            section=gcb-gpfs
+            option=enabled
+            value=1
+
+- name: gcb gpfs enable updates
+  become: yes
+  become_method: sudo
+  ini_file: dest=/etc/yum.repos.d/gcb.repo
+            section=gcb-gpfs-updates
+            option=enabled
+            value=1
+
+- name: Install base packages
+  when: ansible_os_family == 'RedHat'
+  become: yes
+  become_method: sudo
+  yum: name={{ item }} state=present update_cache=yes
+  with_items:
+    - ntp
+    - krb5-workstation 
+    - zsh
 
 - name: Package update
   when: ansible_os_family == 'RedHat'
   become: yes
   become_method: sudo
   yum: name=* state=latest
-
-- name: Install base packages
-  when: ansible_os_family == 'RedHat'
-  become: yes
-  become_method: sudo
-  yum: name={{ item }} state=present
-  with_items:
-    - ntp
-    - krb5-workstation 
-    - zsh
-
-- name: Reboot
-  become: yes
-  become_method: sudo
-  shell: "sleep 1 && shutdown -r now 'Ansible updates triggered'"
-  async: 1
-  poll: 0
-  ignore_errors: true
-
-- name: Waiting for server to come back
-  local_action: wait_for delay=15 host={{ inventory_hostname }}
-                state=started port=22
-
-- debug: msg="System {{ inventory_hostname }} has come back from reboot"

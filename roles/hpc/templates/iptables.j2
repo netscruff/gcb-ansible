@@ -1,0 +1,21 @@
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [0:0]
+# Accept all ssh traffic on all networks
+-A INPUT -p tcp --dport ssh -m state --state NEW -j ACCEPT
+
+# Accept all traffic over loopback interface
+-A INPUT -i lo -j ACCEPT
+
+# Accept all traffic on private network
+-A INPUT -i eth2 -j ACCEPT
+-A INPUT -i ib0 -j ACCEPT
+
+# Accept related and established connections
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+# Block all traffic
+-A INPUT -j REJECT
+
+COMMIT

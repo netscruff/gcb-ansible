@@ -1,0 +1,110 @@
+---
+- name: check home symlink
+  stat: path=/home
+  register: home
+
+- name: Add root ssh key
+  authorized_key:
+    user: root 
+    key: "{{ lookup('file', 'id_rsa.pub') }}"
+
+- name: Remove home directory
+  file:
+    path: /home
+    state: absent
+  when: home.stat.isdir is defined and home.stat.isdir
+
+- name: copy hosts file
+  copy: src=hosts dest=/etc/
+
+- name: ifcfg for ib0 
+  action: template src=ifcfg-ib0.j2 dest=/etc/sysconfig/network-scripts/ifcfg-ib0
+
+- name: iptables configuration
+  action: template src=iptables.j2 dest=/etc/sysconfig/iptables
+
+- name: stop ib0 interface
+  command: /sbin/ifdown ib0
+
+- name: start ib0 interface
+  command: /sbin/ifup ib0
+
+- name: restart iptables
+  service: name=iptables state=restarted 
+
+- name: Start GPFS
+  command: /usr/lpp/mmfs/bin/mmstartup
+
+- name: Wait for GPFS
+  wait_for: path=/gpfs/fs0/data
+
+- name: Create soft links
+  file:
+    src: /{{ item.src }}
+    dest: /{{ item.dest }}
+    state: link
+  with_items:
+    - { src: 'gpfs/fs0/home', dest: '/home' }
+    - { src: 'gpfs/fs0/data', dest: '/data' }
+    - { src: 'gpfs/fs0/admin', dest: '/admin' }
+
+- name: install munge
+  yum:
+    name: munge
+    state: present
+
+- name: install slurm
+  yum:
+    name: /data/itlab/slurm/{{item}}-14.11.9-1.el6.x86_64.rpm
+    state: present
+  with_items:
+    - slurm
+    - slurm-devel
+    - slurm-munge
+    - slurm-pam_slurm
+    - slurm-perlapi
+    - slurm-plugins
+    - slurm-sjobexit
+    - slurm-sjstat 
+
+- name: copy munge key
+  command: cp -v /data/itlab/slurm/munge.key /etc/munge/munge.key
+
+- name: set permissions on the munge key
+  file:
+    path: /etc/munge/munge.key
+    mode: 0400
+    owner: munge
+    group: munge
+
+- name: enable munge service
+  service: name=munge state=started enabled=yes
+
+- name: add slurm unix group
+  group:
+    name: slurm
+    system: no
+    state: present
+    gid: 538
+
+- name: add slurm unix user
+  user:
+    name: slurm
+    shell: /sbin/nologin
+    createhome: no
+    append: yes
+    group: slurm
+    state: present
+    uid: 538
+
+- name: copy slurm configuration
+  copy:
+    src: slurm.conf
+    dest: /etc/slurm/slurm.conf
+    owner: root
+    group: slurm
+    mode: 0644
+
+- name: enable slurm service startup
+  service: name=slurm state=started enabled=yes
+

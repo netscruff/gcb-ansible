@@ -1,0 +1,10 @@
+---
+- hosts: hardac
+  roles:
+    - role: testing 
+    - role: auth
+    - role: geerlingguy.repo-epel
+    - role: ib
+    - role: gpfs
+    - { role: hpc, tags: [ 'config' ] }
+    - role: helmod

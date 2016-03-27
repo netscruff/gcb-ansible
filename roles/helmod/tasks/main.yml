@@ -1,0 +1,30 @@
+---
+- name: Install lmod dependencies
+  yum: name={{ item }} state=present
+  with_items:
+    - lua
+    - lua-filesystem
+    - lua-posix
+    - lua-devel
+
+- name: Create nfs directory
+  file:
+    path: /nfs
+    state: directory
+    mode: 0755
+  
+- name: Create links for helmod
+  file:
+    src: /gpfs/fs0/data/itlab
+    dest: /nfs/software
+    state: link
+
+- name: Copy bash and csh profiles
+  copy: src={{ item }} dest=/etc/profile.d/ owner=root mode=0644
+  with_fileglob:
+      - "roles/helmod/files/lmod.*"
+
+- name: Copy zsh site-functions
+  copy: src={{ item }} dest=/usr/share/zsh/site-functions/ owner=root mode=0644
+  with_fileglob:
+    - "_*"

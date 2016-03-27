@@ -1,0 +1,7 @@
+[duke-centos-oit]
+name=RHEL 6 OIT
+exclude=libk5wrap
+enabled=0
+baseurl=http://yum.oit.duke.edu/yum/oit/centos-6/$basearch/
+priority=1
+gpgcheck=0

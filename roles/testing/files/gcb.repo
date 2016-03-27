@@ -1,0 +1,13 @@
+[gcb-gpfs]
+name=gcb-gpfs
+enabled=0
+baseurl=http://hardac-sm.genome.duke.edu/gpfs/
+priority=1
+gpgcheck=0
+
+[gcb-gpfs-updates]
+name=gcb-gpfs-updates
+enabled=0
+baseurl=http://hardac-sm.genome.duke.edu/gpfs_updates/
+priority=1
+gpgcheck=0

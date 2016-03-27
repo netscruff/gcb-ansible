@@ -1,0 +1,35 @@
+---
+
+- name: Install Infiniband packages
+  yum: name="@Infiniband Support"
+  register: install_ib_group
+
+- name: Install additional IB packages
+  yum: name={{ item }} state=present
+  register: install_ib_packages
+  with_items:
+    - infiniband-diags
+    - perftest
+    - qperf
+    - opensm
+
+- name: Enable services for IB
+  service: name={{ item }} enabled=yes
+  with_items:
+    - opensm
+    - rdma
+
+- name: Reboot
+  become: yes
+  become_method: sudo
+  shell: "sleep 1 && shutdown -r now 'Ansible updates triggered'"
+  async: 1
+  poll: 0
+  ignore_errors: true
+  when: (install_ib_packages == "changed") or (install_ib_group == "changed")
+
+- name: Waiting for server to come back 
+  local_action: wait_for delay=15 host={{ inventory_hostname }}
+                state=started port=22    
+
+- debug: msg="System {{ inventory_hostname }} has come back from reboot"

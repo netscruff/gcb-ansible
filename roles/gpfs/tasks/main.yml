@@ -1,0 +1,33 @@
+---
+- name: Install base GPFS rpm
+  yum:
+    name: gpfs.base
+    disablerepo: gcb-gpfs-updates
+
+- name: Install GPFS rpms
+  yum:
+    name: gpfs.{{item}}
+    disablerepo: gcb-gpfs
+    state: present
+  with_items:
+    - base.x86_64
+    - docs.noarch
+    - gpl.noarch
+    - gplbin-2.6.32-573.22.1.el6.x86_64.x86_64
+    - msg.en_US.noarch
+
+- name: Install Kernel devel
+  yum: name={{ item }} state=present
+  with_items:
+    - compat-libstdc++-33
+    - gcc-c++
+    - imake
+    - kernel-headers
+    - ksh
+    - libstdc++
+    - redhat-lsb
+
+- name: Copy gpfs profile
+  copy: src=gpfs.sh
+        dest=/etc/profile.d/
+        owner=root group=root mode=0644
