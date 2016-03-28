@@ -1,4 +1,6 @@
 ---
+- include: repo.yml
+
 - name: check home symlink
   stat: path=/home
   register: home

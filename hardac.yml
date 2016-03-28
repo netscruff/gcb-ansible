@@ -1,7 +1,9 @@
 ---
 - hosts: hardac
+  become : yes
+  become_method: sudo
   roles:
-    - role: testing 
+    - role: testing
     - role: auth
     - role: geerlingguy.repo-epel
     - role: ib

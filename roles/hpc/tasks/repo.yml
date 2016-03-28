@@ -1,0 +1,23 @@
+---
+- name: gcb gpfs repo
+  become: yes
+  become_method: sudo
+  copy: src=gcb.repo
+        dest=/etc/yum.repos.d/
+        owner=root group=root mode=0644
+
+- name: gcb gpfs enable
+  become: yes
+  become_method: sudo
+  ini_file: dest=/etc/yum.repos.d/gcb.repo
+            section=gcb-gpfs
+            option=enabled
+            value=1
+
+- name: gcb gpfs enable updates
+  become: yes
+  become_method: sudo
+  ini_file: dest=/etc/yum.repos.d/gcb.repo
+            section=gcb-gpfs-updates
+            option=enabled
+            value=1

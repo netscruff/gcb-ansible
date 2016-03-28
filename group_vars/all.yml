@@ -1,0 +1,12 @@
+---
+base_packages:
+    - zsh
+    - ntp
+    - git
+    - tmux
+    - krb5-workstation
+    - sssd
+    - openldap-clients
+    - nscd
+    - sssd-krb5
+    - pam_krb5
