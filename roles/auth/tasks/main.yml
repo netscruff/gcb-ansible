@@ -37,10 +37,7 @@
      authconfig --enablesssd --enablesssdauth --disableldap --disableldapauth --disablekrb5 --update
 
 - name: Copy sssd conf
-  action: template src=sssd.j2 dest=/etc/sssd/sssd.conf
-    owner: root
-    group: root
-    mode: 0600
+  action: template src=sssd.j2 dest=/etc/sssd/sssd.conf owner=root group=root mode=0600
 
 - name: Reload sssd
   service:

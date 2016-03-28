@@ -40,4 +40,15 @@ web-prod6.igsp.duke.edu
 web-prod7.igsp.duke.edu
 web-prod11.igsp.duke.edu
 
-
+[hardac]
+hardac-node11-2.genome.duke.edu
+hardac-node11-3.genome.duke.edu
+hardac-node11-4.genome.duke.edu
+hardac-node12-1.genome.duke.edu
+hardac-node12-2.genome.duke.edu
+hardac-node12-3.genome.duke.edu
+hardac-node12-4.genome.duke.edu
+hardac-node13-1.genome.duke.edu
+hardac-node13-2.genome.duke.edu
+hardac-node13-3.genome.duke.edu
+hardac-node13-4.genome.duke.edu
