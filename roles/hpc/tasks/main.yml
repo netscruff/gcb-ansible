@@ -7,7 +7,7 @@
 
 - name: Add root ssh key
   authorized_key:
-    user: root 
+    user: root
     key: "{{ lookup('file', 'id_rsa.pub') }}"
 
 - name: Remove home directory
@@ -19,7 +19,7 @@
 - name: copy hosts file
   copy: src=hosts dest=/etc/
 
-- name: ifcfg for ib0 
+- name: ifcfg for ib0
   action: template src=ifcfg-ib0.j2 dest=/etc/sysconfig/network-scripts/ifcfg-ib0
 
 - name: iptables configuration
@@ -67,7 +67,16 @@
     - slurm-perlapi
     - slurm-plugins
     - slurm-sjobexit
-    - slurm-sjstat 
+    - slurm-sjstat
+
+- name: install additional packages
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    "{{ hpc.base_packages }}"
+  tags:
+    - packages
 
 - name: copy munge key
   command: cp -v /data/itlab/slurm/munge.key /etc/munge/munge.key
