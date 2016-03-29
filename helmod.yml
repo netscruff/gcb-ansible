@@ -1,0 +1,7 @@
+---
+# file: helmod.yml
+# Playbook for installing lmod/helmod
+- hosts:
+    - schultz01.igsp.duke.edu 
+  roles:
+    - helmod

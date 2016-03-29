@@ -31,6 +31,8 @@
   async: 1
   poll: 0
   ignore_errors: true
+  tags:
+    - reboot
 
 - name: Waiting for server to come back
   local_action: wait_for delay=15 host={{ inventory_hostname }}

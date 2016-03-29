@@ -3,8 +3,7 @@
   become : yes
   become_method: sudo
   roles:
-    - role: testing
-    - role: auth
+    - role: common
     - role: geerlingguy.repo-epel
     - role: ib
     - role: gpfs

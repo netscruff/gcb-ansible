@@ -18,14 +18,14 @@ if [ -z "${USER_IS_ROOT:-}" ]; then
     fi
     export LMOD_arch
 
-    export MODULEPATH_ROOT="/data/itlab/helmod/modulefiles"
+    export MODULEPATH_ROOT="{{ helmod.path }}/modulefiles"
     export LMOD_SETTARG_CMD=":"
     export LMOD_FULL_SETTARG_SUPPORT=no
     export LMOD_COLORIZE=yes
     export LMOD_PREPEND_BLOCK=normal
-    export MODULEPATH=$(/data/itlab/helmod/apps/lmod/lmod/libexec/addto --append MODULEPATH $MODULEPATH_ROOT/$LMOD_sys $MODULEPATH_ROOT/Core)
-    export MODULEPATH=$(/data/itlab/helmod/apps/lmod/lmod/libexec/addto --append MODULEPATH /data/itlab/helmod/apps/lmod/lmod/modulefiles/Core)
-    export MODULESHOME=/data/itlab/helmod/apps/lmod/lmod
+    export MODULEPATH=$({{ helmod.path }}/apps/lmod/lmod/libexec/addto --append MODULEPATH $MODULEPATH_ROOT/$LMOD_sys $MODULEPATH_ROOT/Core)
+    export MODULEPATH=$({{ helmod.path }}/apps/lmod/lmod/libexec/addto --append MODULEPATH {{ helmod.path }}/apps/lmod/lmod/modulefiles/Core)
+    export MODULESHOME={{ helmod.path }}/apps/lmod/lmod
 
     export BASH_ENV=$MODULESHOME/init/bash
 
@@ -35,9 +35,9 @@ if [ -z "${USER_IS_ROOT:-}" ]; then
     if [ -z "${MANPATH:-}" ]; then
       export MANPATH=:
     fi
-    export MANPATH=$(/data/itlab/helmod/apps/lmod/lmod/libexec/addto MANPATH /data/itlab/helmod/apps/lmod/lmod/share/man)
+    export MANPATH=$({{ helmod.path }}/apps/lmod/lmod/libexec/addto MANPATH {{ helmod.path }}/apps/lmod/lmod/share/man)
   fi
 
-  . /data/itlab/helmod/apps/lmod/lmod/init/bash >/dev/null # Module Support
+  . {{ helmod.path }}/apps/lmod/lmod/init/bash >/dev/null # Module Support
 
 fi
