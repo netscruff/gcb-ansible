@@ -1,0 +1,19 @@
+---
+- name: Download docker-volume-netshare Debian package
+  get_url:
+    url="{{ docker_volume_netshare.baseurl }}/{{ docker_volume_netshare.package }}_{{ docker_volume_netshare.version }}_{{ docker_volume_netshare.arch }}.deb"
+    dest="{{ ansible_env.HOME }}/{{ docker_volume_netshare.package }}_{{ docker_volume_netshare.version }}_{{ docker_volume_netshare.arch }}.deb"
+- name: Install docker-volume-netshore Debian
+  apt: deb="{{ ansible_env.HOME }}/{{ docker_volume_netshare.package }}_{{ docker_volume_netshare.version }}_{{ docker_volume_netshare.arch }}.deb"
+- name: Install cifs-utils
+  apt: name=cifs-utils
+  when: docker_volume_netshare.mode == 'cifs'
+- name: Install NFS
+  apt: name=nfs-common
+  when: docker_volume_netshare.mode == 'nfs'
+- name: Place a .netrc file in /
+  template: src=netrc.j2 dest=/.netrc mode=0600
+- name: Configure docker-volume-netshare mode
+  lineinfile: "dest=/etc/default/docker-volume-netshare regexp='^DKV_NETSHARE_OPTS' line='DKV_NETSHARE_OPTS=\"{{ docker_volume_netshare.mode }}\"'"
+- name: Install docker-volume-netshare service
+  service: name="docker-volume-netshare" state=restarted enabled=yes
