@@ -1,0 +1,7 @@
+- name: Deploy application with docker-compose
+  hosts: docker
+  become: yes
+  vars:
+    update_docker_compose_package: yes
+  roles:
+    - docker_compose

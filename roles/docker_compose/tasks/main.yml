@@ -1,0 +1,32 @@
+---
+- name: Install (or update) docker compose package
+  pip: name=docker-compose
+- name: Clone app repo
+  git: repo={{ compose_app.git_url | mandatory }}
+       dest={{ compose_app.dest_dir | mandatory }}
+       version={{ compose_app.version | default('master') }}
+- name: Make env file
+  template: src=compose_app.env.j2 dest={{ compose_app.dest_dir }}/{{ compose_app.env_file }}
+- name: Pull latest images
+  command: docker-compose pull
+  args:
+    chdir: "{{ compose_app.dest_dir }}"
+- name: Check if containers are running
+  command: docker-compose ps -q
+  register: ps_output
+  args:
+    chdir: "{{ compose_app.dest_dir }}"
+- name: Stop existing app
+  command: docker-compose down
+  when: ps_output.stdout != ''
+  args:
+    chdir: "{{ compose_app.dest_dir }}"
+- name: Run setup commands
+  command: docker-compose run {{ item }}
+  with_items: "{{ compose_app.setup_commands }}"
+  args:
+    chdir: "{{ compose_app.dest_dir }}"
+- name: Start docker-compose app
+  command: docker-compose up -d --no-build
+  args:
+    chdir: "{{ compose_app.dest_dir }}"
