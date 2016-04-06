@@ -1,0 +1,12 @@
+---
+docker_volume_netshare:
+  baseurl: "https://dl.bintray.com/content/pacesys/docker"
+  package: "docker-volume-netshare"
+  version: "0.11"
+  arch: "amd64"
+  user: "docker"
+  mode: "cifs"
+netrc:
+  machine: ""
+  username: ""
+  password: ""
