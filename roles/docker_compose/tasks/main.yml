@@ -5,6 +5,14 @@
   git: repo={{ compose_app.git_url | mandatory }}
        dest={{ compose_app.dest_dir | mandatory }}
        version={{ compose_app.version | default('master') }}
+  # Running docker-compose without specifying a file defaults to
+  # docker-compose.yml, and will read docker-compose.override.yml for overrides
+  # if present.
+- name: Link docker-compose.override.yml if override file defined
+  file: src="{{ compose_app.dest_dir }}/{{ compose_app.override_file }}"
+        dest="{{ compose_app.dest_dir }}/docker-compose.override.yml"
+        state=link
+  when: "{{ compose_app.override_file is defined }}"
 - name: Make env file
   template: src=compose_app.env.j2 dest={{ compose_app.dest_dir }}/{{ compose_app.env_file }}
 - name: Pull latest images
