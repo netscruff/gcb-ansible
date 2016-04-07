@@ -1,4 +1,17 @@
 ---
+- name: Make SSL directory
+  file: path={{ compose_app.ssl_dir }} state=directory
+  when: "{{ compose_app.ssl_dir is defined}}"
+- name: Place SSL certificate
+  copy: content="{{ compose_app.ssl_cert }}"
+        dest="{{ compose_app.ssl_dir }}/{{ compose_app.ssl_cert_file }}"
+        mode=400
+  when: "{{ compose_app.ssl_cert_file is defined }}"
+- name: Place SSL private key
+  copy: content="{{ compose_app.ssl_key }}"
+        dest="{{ compose_app.ssl_dir }}/{{ compose_app.ssl_key_file }}"
+        mode=400
+  when: "{{ compose_app.ssl_key_file is defined }}"
 - name: Install (or update) docker compose package
   pip: name=docker-compose
 - name: Clone app repo
@@ -30,7 +43,7 @@
   args:
     chdir: "{{ compose_app.dest_dir }}"
 - name: Run setup commands
-  command: docker-compose run {{ item }}
+  command: docker-compose run --rm {{ item }}
   with_items: "{{ compose_app.setup_commands }}"
   args:
     chdir: "{{ compose_app.dest_dir }}"
