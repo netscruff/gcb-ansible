@@ -1,7 +1,11 @@
+# This playbook requires the angstwad.docker_ubuntu role
+# Install it with `ansible-galaxy install angstwad.docker_ubuntu`
 - name: Deploy application with docker-compose
-  hosts: docker
+  hosts: docker-compose
   become: yes
   vars:
+    update_docker_package: yes
     update_docker_compose_package: yes
   roles:
+    - angstwad.docker_ubuntu
     - docker_compose
