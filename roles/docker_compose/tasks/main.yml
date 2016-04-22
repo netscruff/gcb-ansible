@@ -12,6 +12,19 @@
         dest="{{ compose_app.ssl_dir }}/{{ compose_app.ssl_key_file }}"
         mode=400
   when: "{{ compose_app.ssl_key_file is defined }}"
+- name: Make shibboleth directory
+  file: path={{ compose_app.shib_dir }} state=directory
+  when: "{{ compose_app.shib_dir is defined}}"
+- name: Place Shibboleth SP certificate
+  copy: content="{{ compose_app.shib_sp_cert }}"
+        dest="{{ compose_app.shib_dir }}/{{ compose_app.shib_sp_cert_file }}"
+        mode=400
+  when: "{{ compose_app.shib_sp_cert_file is defined }}"
+- name: Place Shibboleth SP private key
+  copy: content="{{ compose_app.shib_sp_key }}"
+        dest="{{ compose_app.shib_dir }}/{{ compose_app.shib_sp_key_file }}"
+        mode=400
+  when: "{{ compose_app.shib_sp_key_file is defined }}"
 - name: Install (or update) docker compose package
   pip: name=docker-compose
 - name: Clone app repo
