@@ -1,3 +1,0 @@
----
-docker_compose_pkg_name: docker-compose
-docker_apt_cache_valid_time: 600

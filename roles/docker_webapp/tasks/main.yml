@@ -1,0 +1,64 @@
+---
+- name: Make SSL directory
+  file: path={{ docker_webapp.ssl_dir }} state=directory
+  when: "{{ docker_webapp.ssl_dir is defined}}"
+- name: Place SSL certificate
+  copy: content="{{ docker_webapp.ssl_cert }}"
+        dest="{{ docker_webapp.ssl_dir }}/{{ docker_webapp.ssl_cert_file }}"
+        mode=400
+  when: "{{ docker_webapp.ssl_cert_file is defined }}"
+- name: Place SSL private key
+  copy: content="{{ docker_webapp.ssl_key }}"
+        dest="{{ docker_webapp.ssl_dir }}/{{ docker_webapp.ssl_key_file }}"
+        mode=400
+  when: "{{ docker_webapp.ssl_key_file is defined }}"
+- name: Make shibboleth directory
+  file: path={{ docker_webapp.shib_dir }} state=directory
+  when: "{{ docker_webapp.shib_dir is defined}}"
+- name: Place Shibboleth SP certificate
+  copy: content="{{ docker_webapp.shib_sp_cert }}"
+        dest="{{ docker_webapp.shib_dir }}/{{ docker_webapp.shib_sp_cert_file }}"
+        mode=400
+  when: "{{ docker_webapp.shib_sp_cert_file is defined }}"
+- name: Place Shibboleth SP private key
+  copy: content="{{ docker_webapp.shib_sp_key }}"
+        dest="{{ docker_webapp.shib_dir }}/{{ docker_webapp.shib_sp_key_file }}"
+        mode=400
+  when: "{{ docker_webapp.shib_sp_key_file is defined }}"
+# New ansible-docker stuff
+- name: Check for network
+  command: "docker network ls -q -f name=^{{ docker_webapp.network }}$"
+  register: network_id
+- name: Create bridge network
+  command: "docker network create {{ docker_webapp.network }}"
+  when: network_id.stdout == ""
+- name: Create Database container
+  docker:
+    image: postgres
+    name: db
+    env: "{{ docker_webapp.env }}"
+    volumes:
+      - /var/lib/postgresql/data:/var/lib/postgresql/data
+    net: "{{ docker_webapp.network }}"
+    state: reloaded
+- name: Run setup command
+  docker:
+    command: "{{ docker_webapp.setup_command }}"
+    detach: False
+    image: dukegcb/dukedshandoverservice-apache
+    env: "{{ docker_webapp.env }}"
+    volumes:
+      - /etc/external/:/etc/external/
+    net: "{{ docker_webapp.network }}"
+- name: Create app container
+  docker:
+    image: dukegcb/dukedshandoverservice-apache
+    name: web
+    env: "{{ docker_webapp.env }}"
+    volumes:
+      - /etc/external/:/etc/external/
+    net: "{{ docker_webapp.network }}"
+    ports:
+      - "80:80"
+      - "443:443"
+    state: reloaded

@@ -1,0 +1,5 @@
+- name: Deploy Docker web application
+  hosts: docker-webapp
+  become: yes
+  roles:
+    - docker_webapp

@@ -24,5 +24,5 @@ web-prod10.igsp.duke.edu
 [docker]
 colab-sbx-58.oit.duke.edu
 
-[docker-compose]
+[docker-webapp]
 itlab-1.gcb.duke.edu
