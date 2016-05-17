@@ -25,13 +25,13 @@
         dest="{{ docker_webapp.shib_dir }}/{{ docker_webapp.shib_sp_key_file }}"
         mode=400
   when: "{{ docker_webapp.shib_sp_key_file is defined }}"
-# New ansible-docker stuff
 - name: Check for network
   command: "docker network ls -q -f name=^{{ docker_webapp.network }}$"
   register: network_id
+  when: docker_webapp.network is defined
 - name: Create bridge network
   command: "docker network create {{ docker_webapp.network }}"
-  when: network_id.stdout == ""
+  when: docker_webapp.network is defined and network_id.stdout == ""
 - name: Create Database container
   docker:
     image: postgres
