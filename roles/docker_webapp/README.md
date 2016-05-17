@@ -4,7 +4,7 @@ Ansible role for common web application configuration with docker
 
 This role places SSL keys/certificates on a host for web servers and shibboleth SPs. It also creates a docker bridge network, allowing multiple containers to connect to each other by container name.
 
-# Usage
+## Usage
 
 This role reads the following variables out of a **docker_webapp** dictionary. Since SSL keys are private, this data should not be stored in plaintext. Values not required can be safely omitted.
 

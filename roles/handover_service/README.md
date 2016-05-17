@@ -4,7 +4,11 @@ Ansible role for deploying [DukeDSHandoverService](https://github.com/Duke-GCB/D
 
 This role installs two named docker containers (web and db) to run the DukeDSHandoverService application.
 
-# Usage
+## Dependencies
+
+This role depends on the [docker_webapp](../docker_webapp) role.
+
+## Usage
 
 This role reads the following variables out of a **handover_service** dictionary. Since some values are secret, this data should not be stored in plaintext.
 
