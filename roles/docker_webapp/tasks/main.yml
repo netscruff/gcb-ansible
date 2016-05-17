@@ -32,33 +32,4 @@
 - name: Create bridge network
   command: "docker network create {{ docker_webapp.network }}"
   when: docker_webapp.network is defined and network_id.stdout == ""
-- name: Create Database container
-  docker:
-    image: postgres
-    name: db
-    env: "{{ docker_webapp.env }}"
-    volumes:
-      - /var/lib/postgresql/data:/var/lib/postgresql/data
-    net: "{{ docker_webapp.network }}"
-    state: reloaded
-- name: Run setup command
-  docker:
-    command: "{{ docker_webapp.setup_command }}"
-    detach: False
-    image: dukegcb/dukedshandoverservice-apache
-    env: "{{ docker_webapp.env }}"
-    volumes:
-      - /etc/external/:/etc/external/
-    net: "{{ docker_webapp.network }}"
-- name: Create app container
-  docker:
-    image: dukegcb/dukedshandoverservice-apache
-    name: web
-    env: "{{ docker_webapp.env }}"
-    volumes:
-      - /etc/external/:/etc/external/
-    net: "{{ docker_webapp.network }}"
-    ports:
-      - "80:80"
-      - "443:443"
-    state: reloaded
+
