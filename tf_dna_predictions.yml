@@ -1,0 +1,7 @@
+- name: Deploy webserver for viewing predictions inside Docker
+  hosts: tf_dna_predictions
+  become: yes
+  roles:
+    - angstwad.docker_ubuntu
+    - docker_webapp
+    - tf_dna_predictions

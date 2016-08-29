@@ -1,0 +1,126 @@
+- name: Create Database container
+  docker:
+    image: postgres:9.5
+    name: db
+    net: "{{ tf_dna_predictions.network }}"
+    env: "{{ tf_dna_predictions.env }}"
+    volumes:
+      - /var/lib/postgresql/data:/var/lib/postgresql/data
+    pull: always
+    state: reloaded
+    restart_policy: always
+
+- stat: path=/pred_data/loaded.txt
+  register: pred_data_loaded
+
+- name: Setup loading postgres configuration
+  when: pred_data_loaded.stat.isreg is not defined
+  blockinfile:
+    dest: /var/lib/postgresql/data/postgresql.conf
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+    content: |
+      maintenance_work_mem = 2048MB
+      fsync = off
+
+- name: Restart Database container
+  docker:
+    image: postgres:9.5
+    name: db
+    net: "{{ tf_dna_predictions.network }}"
+    env: "{{ tf_dna_predictions.env }}"
+    volumes:
+      - /var/lib/postgresql/data:/var/lib/postgresql/data
+    pull: always
+    state: restarted
+    restart_policy: always
+
+- pause: seconds=3
+
+- name: Creates predictions directory
+  file: path=/pred_data state=directory
+
+- name: Initial download and load database with prediction data
+  when: pred_data_loaded.stat.isreg is not defined
+  docker:
+    image: dukegcb/tf-dna-predictions
+    net: "{{ tf_dna_predictions.network }}"
+    env: "{{ tf_dna_predictions.env }}"
+    command: python load.py run_sql
+    detach: False
+    volumes:
+      - /etc/external/:/etc/external/
+      - /pred_data:/tmp/pred_data
+    pull: always
+
+- name: Create finished loading text file
+  when: pred_data_loaded.stat.isreg is not defined
+  command: touch /pred_data/loaded.txt
+
+- name: Setup production postgres configuration (1/4 RAM shared_buffers, memory for sorting)
+  blockinfile:
+    dest: /var/lib/postgresql/data/postgresql.conf
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+    content: |
+      shared_buffers = 4GB
+      work_mem = 48MB
+      logging_collector = on
+      log_directory = 'pg_log'
+      log_min_duration_statement = 30
+
+- name: Restart Database container
+  docker:
+    image: postgres:9.5
+    name: db
+    net: "{{ tf_dna_predictions.network }}"
+    env: "{{ tf_dna_predictions.env }}"
+    volumes:
+      - /var/lib/postgresql/data:/var/lib/postgresql/data
+    pull: always
+    state: restarted
+    restart_policy: always
+
+- pause: seconds=3
+
+- name: Create web portal container
+  docker:
+    image: dukegcb/tf-dna-predictions
+    name: web
+    net: "{{ tf_dna_predictions.network }}"
+    env: "{{ tf_dna_predictions.env }}"
+    volumes:
+      - /etc/external/:/etc/external/
+      - /pred_data:/tmp/pred_data
+    ports:
+      - "80:80"
+      - "443:443"
+    pull: always
+    state: reloaded
+    restart_policy: always
+
+- name: Create database vacuum container
+  docker:
+    image: dukegcb/tf-dna-predictions
+    name: vacuum
+    net: "{{ tf_dna_predictions.network }}"
+    env: "{{ tf_dna_predictions.env }}"
+    volumes:
+      - /etc/external/:/etc/external/
+      - /pred_data:/tmp/pred_data
+    pull: always
+    state: reloaded
+    restart_policy: always
+
+- name: download models yaml for worker
+  get_url: url=https://raw.githubusercontent.com/Duke-GCB/TrackHubGenerator/master/yaml/tracks/tracks.yaml dest=/pred_data/models/tracks.yaml
+
+- name: Create predictions worker container
+  docker:
+    name: worker
+    image: dukegcb/predict-tf-binding-worker
+    net: "{{ tf_dna_predictions.network }}"
+    env: "{{ tf_dna_predictions.env }}"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp:/tmp
+      - /pred_data/models:/pred_data/models:ro
+      - /pred_data/work:/pred_data/work:rw

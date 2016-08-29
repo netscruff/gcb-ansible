@@ -1,0 +1,19 @@
+---
+tf_dna_predictions:
+  network: tf_dna_predictions
+  env:
+    DB_HOST=db
+    DB_NAME=pred
+    POSTGRES_DB=pred
+    DB_USER=pred_user
+    POSTGRES_USER=pred_user
+    DB_PASS=qzZLFOHN3Hfj
+    POSTGRES_PASSWORD=qzZLFOHN3Hfj
+    DATA_DIR=/pred
+    OUTPUT_DIR=/pred_data/work
+    BASE_URL=http://web/api/v1
+    MODEL_FILES_DIR=/pred_data/models
+    CONFIG_FILE=/pred_data/models/tracks.yaml
+
+docker_webapp:
+  network: tf_dna_predictions
