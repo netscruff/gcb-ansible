@@ -1,4 +1,4 @@
-# Standard python had trouble with oit swift certificates this installs necessary parts so
+# Standard ubuntu python had trouble with oit swift certificates(python bug) this installs necessary parts so
 # ansible can download model files without issues.
 
 - apt: name=libssl-dev

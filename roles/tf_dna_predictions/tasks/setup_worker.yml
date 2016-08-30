@@ -1,3 +1,5 @@
+# Worker process that creates predictions for jobs created by the portal.
+
 - name: Creates models directory
   file: path=/pred_data/models state=directory
 

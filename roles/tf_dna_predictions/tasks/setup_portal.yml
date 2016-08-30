@@ -1,3 +1,5 @@
+# Runs webserver that reads database and sends jobs to worker daemon.
+
 - name: Create web portal container
   docker:
     image: dukegcb/tf-dna-predictions

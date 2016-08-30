@@ -1,6 +1,25 @@
-- name: whentest
-  command: echo "HEY"
-  when: "'{{db_config}}' == 'normal'"
+# Setup postgres with various settings.
+
+- name: Setup loading postgres configuration
+  when: "'{{db_config}}' == 'load'"
+  blockinfile:
+    dest: /var/lib/postgresql/data/postgresql.conf
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+    content: |
+      maintenance_work_mem = 2048MB
+      fsync = off
+
+- name: Setup production postgres configuration (1/4 RAM shared_buffers, memory for sorting)
+  when: "'{{db_config}}' == 'production'"
+  blockinfile:
+    dest: /var/lib/postgresql/data/postgresql.conf
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+    content: |
+      shared_buffers = 4GB
+      work_mem = 48MB
+      logging_collector = on
+      log_directory = 'pg_log'
+      log_min_duration_statement = 30
 
 - name: Create Database container
   docker:
