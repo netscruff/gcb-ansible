@@ -1,0 +1,15 @@
+- name: Create web portal container
+  docker:
+    image: dukegcb/tf-dna-predictions
+    name: web
+    net: "{{ tf_dna_predictions.network }}"
+    env: "{{ tf_dna_predictions.env }}"
+    volumes:
+      - /etc/external/:/etc/external/
+      - /pred_data:/tmp/pred_data
+    ports:
+      - "80:80"
+      - "443:443"
+    pull: always
+    state: reloaded
+    restart_policy: always

@@ -1,14 +1,9 @@
-- name: Create Database container
-  docker:
-    image: postgres:9.5
-    name: db
-    net: "{{ tf_dna_predictions.network }}"
-    env: "{{ tf_dna_predictions.env }}"
-    volumes:
-      - /var/lib/postgresql/data:/var/lib/postgresql/data
-    pull: always
-    state: reloaded
-    restart_policy: always
+- include: tasks/python_https_fixes.yml
+
+- name: Creates predictions data directory shared by portal and worker
+  file: path=/pred_data state=directory
+
+- include: tasks/setup_postgres.yml db_state=reloaded db_config=normal
 
 - stat: path=/pred_data/loaded.txt
   register: pred_data_loaded
@@ -22,22 +17,8 @@
       maintenance_work_mem = 2048MB
       fsync = off
 
-- name: Restart Database container
-  docker:
-    image: postgres:9.5
-    name: db
-    net: "{{ tf_dna_predictions.network }}"
-    env: "{{ tf_dna_predictions.env }}"
-    volumes:
-      - /var/lib/postgresql/data:/var/lib/postgresql/data
-    pull: always
-    state: restarted
-    restart_policy: always
-
-- pause: seconds=3
-
-- name: Creates predictions directory
-  file: path=/pred_data state=directory
+- include: tasks/setup_postgres.yml db_state=restarted db_config=load
+  when: pred_data_loaded.stat.isreg is not defined
 
 - name: Initial download and load database with prediction data
   when: pred_data_loaded.stat.isreg is not defined
@@ -45,7 +26,7 @@
     image: dukegcb/tf-dna-predictions
     net: "{{ tf_dna_predictions.network }}"
     env: "{{ tf_dna_predictions.env }}"
-    command: python load.py run_sql
+    command: python load.py all
     detach: False
     volumes:
       - /etc/external/:/etc/external/
@@ -67,60 +48,12 @@
       log_directory = 'pg_log'
       log_min_duration_statement = 30
 
-- name: Restart Database container
-  docker:
-    image: postgres:9.5
-    name: db
-    net: "{{ tf_dna_predictions.network }}"
-    env: "{{ tf_dna_predictions.env }}"
-    volumes:
-      - /var/lib/postgresql/data:/var/lib/postgresql/data
-    pull: always
-    state: restarted
-    restart_policy: always
+- include: tasks/setup_postgres.yml db_state=restarted  db_config=production
+  when: pred_data_loaded.stat.isreg is not defined
 
-- pause: seconds=3
+- include: tasks/setup_portal.yml
 
-- name: Create web portal container
-  docker:
-    image: dukegcb/tf-dna-predictions
-    name: web
-    net: "{{ tf_dna_predictions.network }}"
-    env: "{{ tf_dna_predictions.env }}"
-    volumes:
-      - /etc/external/:/etc/external/
-      - /pred_data:/tmp/pred_data
-    ports:
-      - "80:80"
-      - "443:443"
-    pull: always
-    state: reloaded
-    restart_policy: always
+- include: tasks/setup_vacuum.yml
 
-- name: Create database vacuum container
-  docker:
-    image: dukegcb/tf-dna-predictions
-    name: vacuum
-    net: "{{ tf_dna_predictions.network }}"
-    env: "{{ tf_dna_predictions.env }}"
-    volumes:
-      - /etc/external/:/etc/external/
-      - /pred_data:/tmp/pred_data
-    pull: always
-    state: reloaded
-    restart_policy: always
+- include: tasks/setup_worker.yml
 
-- name: download models yaml for worker
-  get_url: url=https://raw.githubusercontent.com/Duke-GCB/TrackHubGenerator/master/yaml/tracks/tracks.yaml dest=/pred_data/models/tracks.yaml
-
-- name: Create predictions worker container
-  docker:
-    name: worker
-    image: dukegcb/predict-tf-binding-worker
-    net: "{{ tf_dna_predictions.network }}"
-    env: "{{ tf_dna_predictions.env }}"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /tmp:/tmp
-      - /pred_data/models:/pred_data/models:ro
-      - /pred_data/work:/pred_data/work:rw

@@ -1,0 +1,12 @@
+- name: Create database vacuum container
+  docker:
+    image: dukegcb/tf-dna-predictions
+    name: vacuum
+    net: "{{ tf_dna_predictions.network }}"
+    env: "{{ tf_dna_predictions.env }}"
+    volumes:
+      - /etc/external/:/etc/external/
+      - /pred_data:/tmp/pred_data
+    pull: always
+    state: reloaded
+    restart_policy: always

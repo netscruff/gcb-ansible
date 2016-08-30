@@ -1,0 +1,11 @@
+# Standard python had trouble with oit swift certificates this installs necessary parts so
+# ansible can download model files without issues.
+
+- apt: name=libssl-dev
+
+- pip: name={{item}}
+  with_items:
+    - urllib3[secure]
+    - pyopenssl
+    - ndg-httpsclient
+    - pyasn1

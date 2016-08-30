@@ -1,0 +1,53 @@
+- name: Creates models directory
+  file: path=/pred_data/models state=directory
+
+- name: Creates models directory
+  file: path=/pred_data/work state=directory
+
+- name: download models yaml for worker
+  get_url: url=https://raw.githubusercontent.com/Duke-GCB/TrackHubGenerator/master/yaml/tracks/tracks.yaml dest=/pred_data/models/tracks.yaml
+
+- name: download all models from swift
+  get_url: url=http://swift.oit.duke.edu/v1/AUTH_gcb/gordan_models/{{item}} dest=/pred_data/models/{{item}}
+  with_items:
+    - E2F1-bestSVR.model
+    - E2F1_250nM_Bound_filtered_normalized_logistic_transformed_20bp_GCGC_1a2a3mer_format.model
+    - E2F1_250nM_Bound_filtered_normalized_logistic_transformed_20bp_GCGG_1a2a3mer_format.model
+    - E2F3_250nM_Bound_filtered_normalized_logistic_transformed_20bp_GCGC_1a2a3mer_format.model
+    - E2F3_250nM_Bound_filtered_normalized_logistic_transformed_20bp_GCGG_1a2a3mer_format.model
+    - E2F4-bestSVR.model
+    - E2F4_500nM_Bound_filtered_normalized_logistic_transformed_20bp_GCGC_1a2a3mer_format.model
+    - E2F4_500nM_Bound_filtered_normalized_logistic_transformed_20bp_GCGG_1a2a3mer_format.model
+    - ELK1_100nM_Bound_filtered_normalized_transformed_20bp_GGAA_1a2a3mer_format.model
+    - ELK1_100nM_Bound_filtered_normalized_transformed_20bp_GGAT_1a2a3mer_format.model
+    - ETS1_100nM_Bound_filtered_normalized_transformed_20bp_GGAA_1a2a3mer_format.model
+    - ETS1_100nM_Bound_filtered_normalized_transformed_20bp_GGAT_1a2a3mer_format.model
+    - GABPA_100nM_Bound_filtered_normalized_transformed_20bp_GGAA_1a2a3mer_format.model
+    - GABPA_100nM_Bound_filtered_normalized_transformed_20bp_GGAT_1a2a3mer_format.model
+    - HisMadMax_Bound_filtered_normalized_transformed_20bp_CACATG_1a2a3mer_format.model
+    - HisMadMax_Bound_filtered_normalized_transformed_20bp_CACGAG_1a2a3mer_format.model
+    - HisMadMax_Bound_filtered_normalized_transformed_20bp_CACGCG_1a2a3mer_format.model
+    - HisMadMax_Bound_filtered_normalized_transformed_20bp_CACGTG_1a2a3mer_format.model
+    - HisMadMax_Bound_filtered_normalized_transformed_20bp_CATGCG_1a2a3mer_format.model
+    - HisMax_Bound_filtered_normalized_logistic_transformed_20bp_CACATG_1a2a3mer_format.model
+    - HisMax_Bound_filtered_normalized_logistic_transformed_20bp_CACGAG_1a2a3mer_format.model
+    - HisMax_Bound_filtered_normalized_logistic_transformed_20bp_CACGCG_1a2a3mer_format.model
+    - HisMax_Bound_filtered_normalized_logistic_transformed_20bp_CACGTG_1a2a3mer_format.model
+    - HisMax_Bound_filtered_normalized_logistic_transformed_20bp_CATGCG_1a2a3mer_format.model
+    - HisMycMax_Bound_filtered_normalized_transformed_20bp_CACATG_1a2a3mer_format.model
+    - HisMycMax_Bound_filtered_normalized_transformed_20bp_CACGAG_1a2a3mer_format.model
+    - HisMycMax_Bound_filtered_normalized_transformed_20bp_CACGCG_1a2a3mer_format.model
+    - HisMycMax_Bound_filtered_normalized_transformed_20bp_CACGTG_1a2a3mer_format.model
+    - HisMycMax_Bound_filtered_normalized_transformed_20bp_CATGCG_1a2a3mer_format.model
+
+- name: Create predictions worker container
+  docker:
+    name: worker
+    image: dukegcb/predict-tf-binding-worker
+    net: "{{ tf_dna_predictions.network }}"
+    env: "{{ tf_dna_predictions.env }}"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp:/tmp
+      - /pred_data/models:/pred_data/models:ro
+      - /pred_data/work:/pred_data/work:rw

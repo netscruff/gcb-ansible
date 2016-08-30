@@ -1,0 +1,18 @@
+- name: whentest
+  command: echo "HEY"
+  when: "'{{db_config}}' == 'normal'"
+
+- name: Create Database container
+  docker:
+    image: postgres:9.5
+    name: db
+    net: "{{ tf_dna_predictions.network }}"
+    env: "{{ tf_dna_predictions.env }}"
+    volumes:
+      - /var/lib/postgresql/data:/var/lib/postgresql/data
+    pull: always
+    state: "{{db_state}}"
+    restart_policy: always
+
+- pause: seconds=1
+  when: "'{{db_config}}' == 'restart'"
