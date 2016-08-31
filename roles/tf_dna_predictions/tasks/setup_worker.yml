@@ -53,6 +53,8 @@
       - /tmp:/tmp
       - /pred_data/models:/pred_data/models:ro
       - /pred_data/work:/pred_data/work:rw
+    pull: always
+    state: reloaded
     restart_policy: always
 
 # Using command-line docker pull here because ansible docker_image module is unpredictable.
