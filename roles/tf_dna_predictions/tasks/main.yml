@@ -27,6 +27,8 @@
       - /etc/external/:/etc/external/
       - /pred_data:/tmp/pred_data
     pull: always
+    async: 259200
+    poll: 300
 
 - name: Create finished loading text file
   when: pred_data_loaded.stat.isreg is not defined
@@ -44,4 +46,3 @@
 - include: tasks/setup_vacuum.yml
 
 - include: tasks/setup_worker.yml
-
