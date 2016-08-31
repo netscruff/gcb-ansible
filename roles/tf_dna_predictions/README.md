@@ -1,19 +1,28 @@
 # Setup transcription factor DNA predictions website
 For use with a server with docker already installed.
 
-Creates a database for holding predictions.
+##Creates a database for holding predictions.
+Creates postgres database named 'pred' running inside docker with data stored in volume on host.
  
+##Performs first time setup.
 Downloads prediction and model lists based on predictionconf.yaml config file (in TF-DNA-PredictionsDB).
 Loads the database with the prediction and models.
 The download and load are only done once. 
 This is controlled via the existence of /pred_data/loaded.txt.
 
-Starts web portal (https://github.com/Duke-GCB/TF-DNA-PredictionsDB) and vacuum daemon to cleanup database.
-Starts prediction worker for creating custom predictions based on users uploaded sequences(https://github.com/Duke-GCB/Predict-TF-Binding-Worker)
+##Setup services
+Starts web portal and vacuum daemon to cleanup database.
+Starts prediction worker for creating custom predictions based on users uploaded sequences.
 The web port creates jobs and the worker processes them. 
 The worker communicates with the web port via its REST API.
 
 The database, portal, vacuum daemon, and worker all run in docker containers.
+
+
+Source Code:
+ * Web portal and vacuum: (https://github.com/Duke-GCB/TF-DNA-PredictionsDB)
+ * Prediction worker: (https://github.com/Duke-GCB/TF-DNA-PredictionsDB)
+
 
 # How to test against research toolkits
 ### Create research toolkit (rapid-173.vm.duke.edu for this example).
