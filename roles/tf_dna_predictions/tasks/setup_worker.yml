@@ -54,3 +54,7 @@
       - /pred_data/models:/pred_data/models:ro
       - /pred_data/work:/pred_data/work:rw
     restart_policy: always
+
+- name: Pull latest predictions docker image
+  docker_image:
+    name: dukegcb/predict-tf-binding
