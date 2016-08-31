@@ -2,7 +2,7 @@
 
 - name: Create web portal container
   docker:
-    image: dukegcb/tf-dna-predictions
+    image: dukegcb/tf-dna-predictions-apache
     name: web
     net: "{{ tf_dna_predictions.network }}"
     env: "{{ tf_dna_predictions.env }}"

@@ -53,3 +53,4 @@
       - /tmp:/tmp
       - /pred_data/models:/pred_data/models:ro
       - /pred_data/work:/pred_data/work:rw
+    restart_policy: always

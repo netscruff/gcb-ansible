@@ -6,6 +6,7 @@
     name: vacuum
     net: "{{ tf_dna_predictions.network }}"
     env: "{{ tf_dna_predictions.env }}"
+    command: python vacuum.py 2880
     volumes:
       - /etc/external/:/etc/external/
       - /pred_data:/tmp/pred_data
