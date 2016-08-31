@@ -55,6 +55,8 @@
       - /pred_data/work:/pred_data/work:rw
     restart_policy: always
 
+# Using command-line docker pull here because ansible docker_image module is unpredictable.
+# Version 2.0 fails if there are any untagged docker images. 2.1 appears to fix
+# but would require a force flag to fetch updates, which shouldn't be necessary
 - name: Pull latest predictions docker image
-  docker_image:
-    name: dukegcb/predict-tf-binding
+  command: docker pull dukegcb/predict-tf-binding:latest
