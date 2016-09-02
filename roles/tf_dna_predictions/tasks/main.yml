@@ -16,47 +16,6 @@
 - stat: path=/pred_data/loaded.txt
   register: pred_data_loaded
 
-# Temporary smaller config file
-#- set_fact:
-#    multiline_str: |
-#      binding_max_offset: 5000
-#      download_dir: /tmp/pred_data
-#      genome_data:
-#      - ftp_files:
-#        - goldenPath/hg19/database/knownGene.txt.gz
-#        - goldenPath/hg19/database/kgXref.txt.gz
-#        gene_lists:
-#        - common_lookup_table: kgxref
-#          common_lookup_table_field: kgid
-#          common_name: genesymbol
-#          name: UCSC Known Genes
-#          source_table: knowngene
-#        genome: hg19
-#        genome_file: goldenPath/hg19/bigZips/hg19.2bit
-#        prediction_lists:
-#        - core_length: 4
-#          core_offset: 16
-#          fix_script: bigBedToBed
-#          name: E2F1_0001(JS)
-#          sort_max_guess: 0.6
-#          url: http://trackhub.genome.duke.edu/gordanlab/tf-dna-binding-predictions/hg19/hg19-0001-E2F1-E2F1-bestSVR.model.bb
-#        - core_length: 4
-#          core_offset: 8
-#          fix_script: bigBedToBed
-#          name: E2F4_0002(JS)
-#          sort_max_guess: 0.6
-#          url: http://trackhub.genome.duke.edu/gordanlab/tf-dna-binding-predictions/hg19/hg19-0002-E2F4-E2F4-bestSVR.model.bb
-#        trackhub_url: http://trackhub.genome.duke.edu/gordanlab/tf-dna-binding-predictions/hub.txt
-#      model_base_url: http://swift.oit.duke.edu/v1/AUTH_gcb/gordan_models
-#      model_tracks_url: https://raw.githubusercontent.com/Duke-GCB/TrackHubGenerator/master/yaml/tracks/tracks.yaml?dest=/pred_data/models/tracks.yaml
-#
-#
-#- name: Temp small config file
-#  copy:
-#    content: "{{ multiline_str }}"
-#    dest: /pred_data/small_predictionsconf.yaml
-
-
 # Populate database
 
 - include: tasks/setup_postgres.yml db_state=restarted db_config=load
@@ -73,23 +32,7 @@
     volumes:
       - /etc/external/:/etc/external/
       - /pred_data:/tmp/pred_data
-#      - /pred_data/small_predictionsconf.yaml:/tfdnapredictions/predictionsconf.yaml
     pull: always
-
-- name: Try fail
-  docker:
-    image: dukegcb/tf-dna-predictions
-    net: "{{ tf_dna_predictions.network }}"
-    env: "{{ tf_dna_predictions.env }}"
-    command: pwd
-    detach: False
-    volumes:
-      - /etc/external/:/etc/external/
-      - /pred_data:/tmp/pred_data
-      - /pred_data/small_predictionsconf.yaml:/tfdnapredictions/predictionsconf.yaml
-    pull: always
-  async: 2000
-  poll: 10
 
 - name: Create finished loading text file
   when: pred_data_loaded.stat.isreg is not defined
