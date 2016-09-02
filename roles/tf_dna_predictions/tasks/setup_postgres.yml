@@ -19,7 +19,7 @@
       work_mem = 48MB
       logging_collector = on
       log_directory = 'pg_log'
-      log_min_duration_statement = 30
+      log_min_duration_statement = 1500
 
 - name: Create Database container
   docker:
