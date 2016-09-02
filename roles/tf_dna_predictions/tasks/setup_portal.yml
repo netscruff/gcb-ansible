@@ -9,6 +9,7 @@
     volumes:
       - /etc/external/:/etc/external/
       - /pred_data:/tmp/pred_data
+#      - /pred_data/small_predictionsconf.yaml:/tfdnapredictions/predictionsconf.yaml
     ports:
       - "80:80"
       - "443:443"
