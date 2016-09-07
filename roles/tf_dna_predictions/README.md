@@ -21,7 +21,7 @@ The database, portal, vacuum daemon, and worker all run in docker containers.
 
 Source Code:
  * Web portal and vacuum: (https://github.com/Duke-GCB/TF-DNA-PredictionsDB)
- * Prediction worker: (https://github.com/Duke-GCB/TF-DNA-PredictionsDB)
+ * Prediction worker: (https://github.com/Duke-GCB/Predict-TF-Binding-Service)
 
 
 # How to test against research toolkits
