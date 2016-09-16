@@ -25,8 +25,8 @@
   docker:
     image: postgres:9.5
     name: db
-    net: "{{ tf_dna_predictions.network }}"
-    env: "{{ tf_dna_predictions.env }}"
+    net: "{{ imads.network }}"
+    env: "{{ imads.env }}"
     volumes:
       - /var/lib/postgresql/data:/var/lib/postgresql/data
     pull: always

@@ -2,10 +2,10 @@
 
 - name: Create database vacuum container
   docker:
-    image: dukegcb/tf-dna-predictions
+    image: dukegcb/imads
     name: vacuum
-    net: "{{ tf_dna_predictions.network }}"
-    env: "{{ tf_dna_predictions.env }}"
+    net: "{{ imads.network }}"
+    env: "{{ imads.env }}"
     command: python vacuum.py 2880
     volumes:
       - /etc/external/:/etc/external/

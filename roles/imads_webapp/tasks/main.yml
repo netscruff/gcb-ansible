@@ -24,9 +24,9 @@
 - name: Initial download and load database with prediction data
   when: pred_data_loaded.stat.isreg is not defined
   docker:
-    image: dukegcb/tf-dna-predictions
-    net: "{{ tf_dna_predictions.network }}"
-    env: "{{ tf_dna_predictions.env }}"
+    image: dukegcb/imads
+    net: "{{ imads.network }}"
+    env: "{{ imads.env }}"
     command: python load.py all
     detach: False
     volumes:
