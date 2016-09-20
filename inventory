@@ -9,3 +9,6 @@ rhel7-base.igsp.duke.edu
 
 [lsrc-test]
 lsrc-compute-1-[0:15].genome.duke.edu
+
+[test]
+nagios.gcb.duke.edu
