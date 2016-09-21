@@ -1,0 +1,41 @@
+[sssd]
+config_file_version = 2
+services = nss, pam
+# SSSD will not start if you do not configure any domains.
+# Add new domain configurations as [domain/<NAME>] sections, and
+# then add the list of domains (in the order you want them to be
+# queried) to the "domains" attribute below and uncomment it.
+domains = LDAP
+
+[nss]
+
+[pam]
+
+# Example LDAP domain
+[domain/LDAP]
+#debug_level = 9
+id_provider = ldap
+auth_provider = krb5
+chpass_provider = krb5
+# ldap_schema can be set to "rfc2307", which stores group member names in the
+# "memberuid" attribute, or to "rfc2307bis", which stores group member DNs in
+# the "member" attribute. If you do not know this value, ask your LDAP
+# administrator.
+ldap_schema = rfc2307bis
+ldap_uri = ldaps://idms-authdir.oit.duke.edu
+ldap_search_base = dc=duke,dc=edu
+ldap_user_search_base = ou=people,dc=duke,dc=edu???ou=accounts,dc=duke,dc=edu??
+ldap_group_search_base = ou=UNIX,ou=systems,ou=gcb,ou=duke,ou=groups,dc=duke,dc=edu
+#ldap_user_member_of = member
+ldap_default_bind_dn = uid=gcb-unix-group-access,ou=Local Accounts,dc=duke,dc=edu
+ldap_default_authtok_type = obfuscated_password
+ldap_default_authtok = {{ idms_authdir.authtok }}
+krb5_realm = ACPUB.DUKE.EDU
+krb5_server = kaserv1.acpub.duke.edu:88,kaserv2.acpub.duke.edu:88
+
+# Note that enabling enumeration will have a moderate performance impact.
+# Consequently, the default value for enumeration is FALSE.
+# Refer to the sssd.conf man page for full details.
+enumerate = true
+# Allow offline logins by locally storing password hashes (default: false).
+cache_credentials = true
