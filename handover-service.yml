@@ -1,7 +1,0 @@
-- name: Deploy Handover service with Docker
-  hosts: handoverservice
-  become: yes
-  roles:
-    - angstwad.docker_ubuntu
-    - docker_webapp
-    - handover_service

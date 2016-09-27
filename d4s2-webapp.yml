@@ -1,0 +1,7 @@
+- name: Deploy D4S2 service with Docker
+  hosts: d4s2
+  become: yes
+  roles:
+   - angstwad.docker_ubuntu
+   - docker_webapp
+   - d4s2_webapp
