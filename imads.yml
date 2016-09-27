@@ -1,0 +1,7 @@
+- name: Deploy webserver for viewing predictions inside Docker
+  hosts: imads
+  become: yes
+  roles:
+    - angstwad.docker_ubuntu
+    - docker_webapp
+    - imads_webapp
