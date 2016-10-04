@@ -1,0 +1,35 @@
+---
+- name: Make SSL directory
+  file: path={{ docker_webapp.ssl_dir }} state=directory
+  when: "{{ docker_webapp.ssl_dir is defined}}"
+- name: Place SSL certificate
+  copy: content="{{ docker_webapp.ssl_cert }}"
+        dest="{{ docker_webapp.ssl_dir }}/{{ docker_webapp.ssl_cert_file }}"
+        mode=400
+  when: "{{ docker_webapp.ssl_cert_file is defined }}"
+- name: Place SSL private key
+  copy: content="{{ docker_webapp.ssl_key }}"
+        dest="{{ docker_webapp.ssl_dir }}/{{ docker_webapp.ssl_key_file }}"
+        mode=400
+  when: "{{ docker_webapp.ssl_key_file is defined }}"
+- name: Make shibboleth directory
+  file: path={{ docker_webapp.shib_dir }} state=directory
+  when: "{{ docker_webapp.shib_dir is defined}}"
+- name: Place Shibboleth SP certificate
+  copy: content="{{ docker_webapp.shib_sp_cert }}"
+        dest="{{ docker_webapp.shib_dir }}/{{ docker_webapp.shib_sp_cert_file }}"
+        mode=400
+  when: "{{ docker_webapp.shib_sp_cert_file is defined }}"
+- name: Place Shibboleth SP private key
+  copy: content="{{ docker_webapp.shib_sp_key }}"
+        dest="{{ docker_webapp.shib_dir }}/{{ docker_webapp.shib_sp_key_file }}"
+        mode=400
+  when: "{{ docker_webapp.shib_sp_key_file is defined }}"
+- name: Check for network
+  command: "docker network ls -q -f name=^{{ docker_webapp.network }}$"
+  register: network_id
+  when: docker_webapp.network is defined
+- name: Create bridge network
+  command: "docker network create {{ docker_webapp.network }}"
+  when: docker_webapp.network is defined and network_id.stdout == ""
+

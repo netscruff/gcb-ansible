@@ -1,0 +1,7 @@
+---
+# file: roles/auth/tasks/main.yml
+- include: ldap.yml
+  tags: ldap
+
+- include: sssd.yml
+  tags: sssd
