@@ -1,0 +1,37 @@
+# Setup postgres with various settings.
+
+- name: Setup loading postgres configuration
+  when: "'{{db_config}}' == 'load'"
+  blockinfile:
+    dest: /var/lib/postgresql/data/postgresql.conf
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+    content: |
+      maintenance_work_mem = 2048MB
+      fsync = off
+
+- name: Setup production postgres configuration (1/4 RAM shared_buffers, memory for sorting)
+  when: "'{{db_config}}' == 'production'"
+  blockinfile:
+    dest: /var/lib/postgresql/data/postgresql.conf
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+    content: |
+      shared_buffers = 4GB
+      work_mem = 48MB
+      logging_collector = on
+      log_directory = 'pg_log'
+      log_min_duration_statement = 1500
+
+- name: Create Database container
+  docker:
+    image: postgres:9.5
+    name: db
+    net: "{{ imads.network }}"
+    env: "{{ imads.env }}"
+    volumes:
+      - /var/lib/postgresql/data:/var/lib/postgresql/data
+    pull: always
+    state: "{{db_state}}"
+    restart_policy: always
+
+- pause: seconds=1
+  when: "'{{db_config}}' == 'restart'"
