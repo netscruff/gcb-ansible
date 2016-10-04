@@ -1,0 +1,35 @@
+---
+- name: Create group
+  group: name={{ deploy.group }} state=present gid={{ deploy.gid }}
+
+- name: Ensure sudoers.d is enabled
+  lineinfile: dest=/etc/sudoers state=present backup=yes regexp='^#includedir /etc/sudoers.d' line='#includedir /etc/sudoers.d'
+
+- name: Set up password-less sudo for user
+  copy: content="%{{ deploy.user }} ALL=(ALL) NOPASSWD:ALL" dest="/etc/sudoers.d/{{ deploy.user }}" owner=root group=root mode=0440
+
+- name: Create user
+  user: name={{ deploy.user }} state=present group={{ deploy.group }} shell=/bin/bash home={{ deploy.home_dir }}{{ deploy.user }} uid={{ deploy.uid }}
+
+- stat: path=/tmp
+  register: t
+
+- name: Take ownership of /tmp
+  shell: sudo chown {{ deploy.user }}:{{ deploy.group }} /tmp
+  when: deploy.take_ownership_of_tmp == "true" and t.stat.pw_name != "{{ deploy.user }}"
+
+- name: Set up authorized_keys for the deploy user 
+  authorized_key:
+    user: "{{ deploy.user }}"
+    key: "{{ lookup('file', lookup('env', 'HOME') + '/.ssh/id_rsa.pub') }}" 
+  tags:
+    - key
+
+- name: Add deploy user to sshd config
+  replace:
+    backup: yes
+    dest: /etc/ssh/sshd_config
+    regexp: '^(AllowGroups(?!.*\b{{ deploy.group }}\b).*)$'
+    replace: '\1 {{ deploy.group }}'
+  notify:
+  - restart sshd

@@ -1,0 +1,5 @@
+---
+- name: Install SMRT Analysis
+  hosts: gridengine_master
+  roles:
+    - smrt-analysis

@@ -1,0 +1,24 @@
+---
+- name: Create SMRT Analysis Group
+  group: name={{ smrt.group }} state=present
+
+- name: Create SMRT Analysis User
+  user: name={{ smrt.user }} state=present shell=/bin/bash home={{ smrt.root }} group={{ smrt.group }}
+  
+- name: Create the SMRT Analysis installation directory
+  file:
+    path: "{{ smrt.root }}"
+    mode: 0755
+
+- name: Download installer
+  get_url:
+    url: "{{ smrt.url }}"
+    dest: "{{ smrt.root }}/{{ smrt.installer }}"
+    owner: "{{ smrt.user }}"
+    group: "{{ smrt.group }}"
+    mode: 0755
+
+- name: Extract installer
+  unarchive:
+    src: "{{ smrt.root }}/{{ smrt.installer }}"
+    dest: "{{ smrt.root }}/"

@@ -1,0 +1,6 @@
+---
+
+- name: Configure hosts
+  hosts: smrtlink
+  roles:
+    - ansible-deploy-user

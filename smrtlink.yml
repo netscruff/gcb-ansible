@@ -1,0 +1,6 @@
+---
+- name: Install SMRT Link and prerequisites
+  hosts: gridengine_master
+  become: yes
+  roles:
+    - smrt-link

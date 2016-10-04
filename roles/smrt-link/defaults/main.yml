@@ -1,0 +1,7 @@
+---
+smrt:
+  root: /opt/pacbio
+  user: smrtanalysis
+  group: smrtanalysis
+  url: https://downloads.pacbcloud.com/public/software/installers/smrtlink_3.1.1.182868.zip
+  installer: smrtlink_3.1.1.182868.zip

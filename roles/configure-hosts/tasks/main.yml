@@ -1,0 +1,17 @@
+---
+
+- name: install dhts satellite ca 
+  yum:
+    name: http://vlp-satellite.dhe.duke.edu/pub/katello-ca-consumer-vlp-satellite.dhe.duke.edu-1.0-4.noarch.rpm
+    state: present
+  tags:
+    - config
+
+- name: register to satellite
+  redhat_subscription:
+    state: present
+    org_id: DHTS 
+    activationkey: key-dhts-rhel6-64bit-prod
+
+- name: update
+  yum: name=* state=latest
