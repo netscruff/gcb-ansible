@@ -1,11 +1,12 @@
 # Worker process that creates predictions for jobs created by the portal.
-# This requires /pred_data/models directory to already contain tracks.yaml and appropriate *.model files.
+# This requires /pred_data/models directory to already contain
+# tracks-{predictions,preferences}.yaml and appropriate *.model files.
 # This requires /pred_data/work directory it will use for temporary storage.
 
 - name: Create predictions worker container
   docker:
     name: worker
-    image: dukegcb/predict-tf-binding-worker
+    image: dukegcb/imads-worker
     net: "{{ imads.network }}"
     env: "{{ imads.env }}"
     volumes:
@@ -22,3 +23,5 @@
 # but would require a force flag to fetch updates, which shouldn't be necessary
 - name: Pull latest predictions docker image
   command: docker pull dukegcb/predict-tf-binding:latest
+- name: Pull latest predictions docker image
+  command: docker pull dukegcb/predict-tf-preferences:latest
