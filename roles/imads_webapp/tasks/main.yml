@@ -1,4 +1,6 @@
-- include: tasks/python_https_fixes.yml
+- name: Install docker py on RedHat
+  yum: name=python-docker-py
+  when: ansible_os_family == "RedHat"
 
 - name: Creates predictions data directory shared by portal and worker
   file: path=/pred_data state=directory

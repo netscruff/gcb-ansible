@@ -2,6 +2,7 @@
   hosts: imads
   become: yes
   roles:
-    - angstwad.docker_ubuntu
+    - { role: RDI2.docker, when: "ansible_os_family == 'RedHat'" }
+    - { role: angstwad.docker_ubuntu, when: "ansible_os_family == 'Debian'" }
     - docker_webapp
     - imads_webapp
