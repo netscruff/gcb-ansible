@@ -29,7 +29,7 @@
     image: dukegcb/imads
     net: "{{ imads.network }}"
     env: "{{ imads.env }}"
-    command: python load.py all
+    command: python load.py download
     detach: False
     volumes:
       - /etc/external/:/etc/external/
