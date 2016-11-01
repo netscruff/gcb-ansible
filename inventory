@@ -25,7 +25,7 @@ web-prod10.igsp.duke.edu
 colab-sbx-58.oit.duke.edu
 
 [imads]
-rapid-173.vm.duke.edu ansible_user=rapiduser
+imads-prod-01.oit.duke.edu ansible_user=rapiduser
 
 [d4s2]
 d4s2.gcb.duke.edu
