@@ -12,8 +12,8 @@
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp:/tmp
-      - /pred_data/models:/pred_data/models:ro
-      - /pred_data/work:/pred_data/work:rw
+      - "{{ imads.data_root }}/pred_data/models/:{{ imads.data_root }}/pred_data/models/:ro"
+      - "{{ imads.data_root }}/pred_data/work/:{{ imads.data_root }}/pred_data/work/:rw"
     pull: always
     state: reloaded
     restart_policy: always
@@ -21,7 +21,7 @@
 - name: Place YAML metadata for worker
   get_url:
     url: "https://raw.githubusercontent.com/Duke-GCB/TrackHubGenerator/master/yaml/tracks/{{ item }}"
-    dest: "/pred_data/models/"
+    dest: "{{ imads.data_root }}/pred_data/models/"
   with_items:
     - "tracks-predictions.yaml"
     - "tracks-preferences.yaml"
