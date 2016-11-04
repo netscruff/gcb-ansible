@@ -12,7 +12,7 @@
     privileged: yes #privileged so that on RedHat with SELinux, container can access docker.sock
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /tmp:/tmp
+      - "{{ imads.data_root }}/tmp:{{ imads.data_root }}/tmp"
       - "{{ imads.data_root }}/pred_data/models/:{{ imads.data_root }}/pred_data/models/:ro"
       - "{{ imads.data_root }}/pred_data/work/:{{ imads.data_root }}/pred_data/work/:rw"
     pull: always
