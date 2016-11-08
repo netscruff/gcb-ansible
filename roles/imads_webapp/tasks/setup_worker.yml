@@ -9,12 +9,9 @@
     image: dukegcb/imads-worker
     net: "{{ imads.network }}"
     env: "{{ imads.env }}"
-    privileged: yes #privileged so that on RedHat with SELinux, container can access docker.sock
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - "{{ imads.data_root }}/tmp:{{ imads.data_root }}/tmp"
-      - "{{ imads.data_root }}/pred_data/models/:{{ imads.data_root }}/pred_data/models/:ro"
-      - "{{ imads.data_root }}/pred_data/work/:{{ imads.data_root }}/pred_data/work/:rw"
+      - "{{ imads.data_root }}/pred_data/models/:/models/:ro"
+      - "{{ imads.data_root }}/pred_data/work/:/work/:rw"
     pull: always
     state: reloaded
     restart_policy: always
@@ -26,11 +23,3 @@
   with_items:
     - "tracks-predictions.yaml"
     - "tracks-preferences.yaml"
-
-# Using command-line docker pull here because ansible docker_image module is unpredictable.
-# Version 2.0 fails if there are any untagged docker images. 2.1 appears to fix
-# but would require a force flag to fetch updates, which shouldn't be necessary
-- name: Pull latest predictions docker image
-  command: docker pull dukegcb/predict-tf-binding:latest
-- name: Pull latest preferences docker image
-  command: docker pull dukegcb/predict-tf-preference:latest
