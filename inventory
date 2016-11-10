@@ -94,7 +94,7 @@ x2-08-4.genome.duke.edu
 itlab-1.gcb.duke.edu
 
 [imads]
-rapid-173.vm.duke.edu ansible_user=rapiduser
+imads-prod-01.oit.duke.edu ansible_connection=local
 
 [d4s2]
 d4s2.gcb.duke.edu

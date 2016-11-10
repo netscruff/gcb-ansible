@@ -10,19 +10,6 @@
     pull: true
     state: started
     restart_policy: always
-- name: Run initial database migration
-  docker_container:
-    image: quay.io/dukegcb/d4s2-apache
-    name: web_migrate
-    networks:
-      - name: "{{ d4s2_config.network }}"
-    command: python manage.py migrate
-    detach: False
-    env: "{{ d4s2_config.env }}"
-    volumes:
-      - /etc/external/:/etc/external/
-    pull: true
-#    state: absent
 - name: Create app container
   docker_container:
     image: quay.io/dukegcb/d4s2-apache

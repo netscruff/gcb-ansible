@@ -1,19 +1,20 @@
-- include: tasks/python_https_fixes.yml
+- name: Install docker py on RedHat
+  yum: name=python-docker-py
+  when: ansible_os_family == "RedHat"
 
 - name: Creates predictions data directory shared by portal and worker
-  file: path=/pred_data state=directory
+  file: path="{{ imads.data_root }}/pred_data" state=directory
 
 - name: Creates models directory
-  file: path=/pred_data/models state=directory
+  file: path="{{ imads.data_root }}/pred_data/models" state=directory
 
-- name: Creates models directory
-  file: path=/pred_data/work state=directory
+- name: Creates work directory
+  file: path="{{ imads.data_root }}/pred_data/work" state=directory mode="a+rwx"
 
 # Create database
-
 - include: tasks/setup_postgres.yml db_state=reloaded db_config=normal
 
-- stat: path=/pred_data/loaded.txt
+- stat: path="{{ imads.data_root }}/pred_data/loaded.txt"
   register: pred_data_loaded
 
 # Populate database
@@ -27,16 +28,16 @@
     image: dukegcb/imads
     net: "{{ imads.network }}"
     env: "{{ imads.env }}"
-    command: python load.py all
+    command: python load.py download
     detach: False
     volumes:
       - /etc/external/:/etc/external/
-      - /pred_data:/tmp/pred_data
+      - "{{ imads.data_root }}/pred_data:/tmp/pred_data"
     pull: always
 
 - name: Create finished loading text file
   when: pred_data_loaded.stat.isreg is not defined
-  command: touch /pred_data/loaded.txt
+  file: path="{{ imads.data_root }}/pred_data/loaded.txt" state=touch
 
 # Setup production database settings
 

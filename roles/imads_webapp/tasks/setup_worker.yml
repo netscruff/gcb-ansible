@@ -1,24 +1,25 @@
 # Worker process that creates predictions for jobs created by the portal.
-# This requires /pred_data/models directory to already contain tracks.yaml and appropriate *.model files.
+# This requires /pred_data/models directory to already contain
+# tracks-{predictions,preferences}.yaml and appropriate *.model files.
 # This requires /pred_data/work directory it will use for temporary storage.
 
 - name: Create predictions worker container
   docker:
     name: worker
-    image: dukegcb/predict-tf-binding-worker
+    image: dukegcb/imads-worker
     net: "{{ imads.network }}"
     env: "{{ imads.env }}"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /tmp:/tmp
-      - /pred_data/models:/pred_data/models:ro
-      - /pred_data/work:/pred_data/work:rw
+      - "{{ imads.data_root }}/pred_data/models/:/models/:ro"
+      - "{{ imads.data_root }}/pred_data/work/:/work/:rw"
     pull: always
     state: reloaded
     restart_policy: always
 
-# Using command-line docker pull here because ansible docker_image module is unpredictable.
-# Version 2.0 fails if there are any untagged docker images. 2.1 appears to fix
-# but would require a force flag to fetch updates, which shouldn't be necessary
-- name: Pull latest predictions docker image
-  command: docker pull dukegcb/predict-tf-binding:latest
+- name: Place YAML metadata for worker
+  get_url:
+    url: "https://raw.githubusercontent.com/Duke-GCB/TrackHubGenerator/master/yaml/tracks/{{ item }}"
+    dest: "{{ imads.data_root }}/pred_data/models/"
+  with_items:
+    - "tracks-predictions.yaml"
+    - "tracks-preferences.yaml"

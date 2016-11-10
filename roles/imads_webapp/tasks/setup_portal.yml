@@ -8,7 +8,7 @@
     env: "{{ imads.env }}"
     volumes:
       - /etc/external/:/etc/external/
-      - /pred_data:/tmp/pred_data
+      - "{{ imads.data_root }}/pred_data:/tmp/pred_data"
     ports:
       - "80:80"
       - "443:443"
