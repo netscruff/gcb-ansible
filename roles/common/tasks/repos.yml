@@ -4,31 +4,8 @@
         dest=/etc/yum.repos.d/
         owner=root group=root mode=0644
 
-- name: CentOS base repo
-  copy: src=CentOS-Base.repo
-        dest=/etc/yum.repos.d/
-        owner=root group=root mode=0644
-
 - name: duke repository enable
   ini_file: dest=/etc/yum.repos.d/duke-centos-oit.repo
             section=duke-centos-oit
-            option=enabled
-            value=1
-
-- name: CentOS base enable
-  ini_file: dest=/etc/yum.repos.d/CentOS-Base.repo
-            section=base
-            option=enabled
-            value=1
-
-- name: CentOS updates enable
-  ini_file: dest=/etc/yum.repos.d/CentOS-Base.repo
-            section=updates
-            option=enabled
-            value=1
-
-- name: CentOS extras enable
-  ini_file: dest=/etc/yum.repos.d/CentOS-Base.repo
-            section=extras
             option=enabled
             value=1

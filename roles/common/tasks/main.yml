@@ -1,21 +1,31 @@
 ---
 - debug: var=hostvars[inventory_hostname]
 
-- include_vars: rhn_credentials.yml
+- name: install dhts satellite ca
+  yum:
+    name: http://vlp-satellite.dhe.duke.edu/pub/katello-ca-consumer-vlp-satellite.dhe.duke.edu-1.0-4.noarch.rpm
+    state: present
+  tags:
+    - config
 
-- include: repos.yml
-  become: yes
-
-- name: Register RHN
-  when: ansible_distribution == 'Red Hat Enterprise Linux'
-  become: yes
-  rhn_register: state=present username={{ rhn.username }} password={{ rhn.password }}
+- name: register to satellite
+  redhat_subscription:
+    state: present
+    org_id: DHTS
+    activationkey: key-gcb-rhel6-64bit-prod
+  tags:
+    - rhnregister
 
 - name: Package update
   when: ansible_os_family == 'RedHat'
   become: yes
   become_method: sudo
   yum: name=* state=latest
+
+- name: Check for reboot hint.
+  shell: LAST_KERNEL=$(rpm -q --last kernel | perl -pe 's/^kernel-(\S+).*/$1/' | head -1); CURRENT_KERNEL=$(uname -r); if [ $LAST_KERNEL != $CURRENT_KERNEL ]; then echo 'reboot'; else echo 'no'; fi
+  ignore_errors: true
+  register: reboot_hint
 
 - name: Install base packages
   when: ansible_os_family == 'RedHat'
@@ -31,11 +41,18 @@
   async: 1
   poll: 0
   ignore_errors: true
+  when: reboot_hint.stdout.find("reboot") != -1
   tags:
     - reboot
 
 - name: Waiting for server to come back
   local_action: wait_for delay=15 host={{ inventory_hostname }}
                 state=started port=22
+  when: reboot_hint.stdout.find("reboot") != -1
+  tags:
+    - reboot
 
-- debug: msg="System {{ inventory_hostname }} has come back from reboot"
+    - debug: msg="System {{ inventory_hostname }} has come back from reboot"
+  when: reboot_hint.stdout.find("reboot") != -1
+  tags:
+    - reboot

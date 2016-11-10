@@ -1,0 +1,8 @@
+---
+deploy:
+  user: gcbdeploy
+  group: gcbdeploy
+  home_dir: /gcbdeploy
+  uid: 80
+  gid: 80
+  take_ownership_of_tmp: false

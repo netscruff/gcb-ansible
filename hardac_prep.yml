@@ -1,0 +1,9 @@
+---
+- hosts: hardac-new
+  roles:
+    - role: ansible-deploy-user
+    - role: common
+    - role: ib
+    - role: gpfs
+    - role: besclient
+    - role: splunk

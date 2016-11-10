@@ -1,14 +1,7 @@
 ---
-- include: repo.yml
-
 - name: check home symlink
   stat: path=/home
   register: home
-
-- name: Add root ssh key
-  authorized_key:
-    user: root
-    key: "{{ lookup('file', 'id_rsa.pub') }}"
 
 - name: Remove home directory
   file:
@@ -32,7 +25,7 @@
   command: /sbin/ifup ib0
 
 - name: restart iptables
-  service: name=iptables state=restarted 
+  service: name=iptables state=restarted
 
 - name: Start GPFS
   command: /usr/lpp/mmfs/bin/mmstartup
@@ -55,12 +48,16 @@
     name: munge
     state: present
 
+- name: install slurm base
+  yum:
+    name: /data/itlab/slurm/slurm-16.05.6-1.el6.x86_64.rpm
+    state: present
+
 - name: install slurm
   yum:
-    name: /data/itlab/slurm/{{item}}-14.11.9-1.el6.x86_64.rpm
+    name: "{{item}}"
     state: present
   with_items:
-    - slurm
     - slurm-devel
     - slurm-munge
     - slurm-pam_slurm
@@ -119,8 +116,13 @@
 - name: enable slurm service startup
   service: name=slurm state=started enabled=yes
 
+- name: create nfs directory
+  file:
+    path: /nfs
+    state: directory
+
 - name: Create links for helmod
   file:
-    path: /gpfs/fs0/data/itlab
+    src: /gpfs/fs0/data/itlab
     dest: /nfs/software
     state: link

@@ -1,0 +1,16 @@
+---
+- name: Install splunk forwarder
+  yum:
+    name: splunkforwarder
+    state: latest
+
+- name: Configure splunk
+  command: /opt/splunkforwarder/bin/splunk set deploy-poll 10.12.255.41:8089 --accept-license
+  args:
+    creates: /opt/splunkforwarder/etc/apps/dhts_all_deploymentclient
+
+- name: Start splunk
+  command:  /opt/splunkforwarder/bin/splunk start
+
+- name: Create init scripts
+  command:  /opt/splunkforwarder/bin/splunk enable boot-start

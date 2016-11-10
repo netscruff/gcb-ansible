@@ -1,11 +1,5 @@
 ---
-- hosts: hardac
-  become : yes
-  become_method: sudo
+- hosts: hardac-new
   roles:
-    - role: common
-    - role: geerlingguy.repo-epel
-    - role: ib
-    - role: gpfs
-    - { role: hpc, tags: [ 'config' ] }
+    - role: hpc
     - role: helmod

@@ -1,0 +1,29 @@
+---
+- name: Install BigFix client
+  yum:
+    name: BESAgent
+    state: latest
+
+- name: Create directory for BESClient config
+  file:
+    path: /etc/opt/BESClient
+    state: directory
+    mode: 0755
+
+- name: Copy actionsite.afxm file
+  copy:
+    src: actionsite.afxm
+    dest: /etc/opt/BESClient/actionsite.afxm
+    mode: 0600
+
+- name: Change owner of server in BigFix
+  copy:
+    src: IEM.BES.Owner.txt
+    dest: /var/IEM.BES.Owner.txt
+    mode: 0644
+
+- name: Start besclient service
+  service:
+    name: besclient
+    state: started
+    enabled: yes

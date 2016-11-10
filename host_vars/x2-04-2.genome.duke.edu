@@ -1,0 +1,4 @@
+ib0:
+    device: ib0
+    ipaddr: 192.168.10.86
+    netmask: 255.255.255.0
