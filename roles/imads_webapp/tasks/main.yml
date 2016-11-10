@@ -8,8 +8,8 @@
 - name: Creates models directory
   file: path="{{ imads.data_root }}/pred_data/models" state=directory
 
-- name: Creates models directory
-  file: path="{{ imads.data_root }}/pred_data/work" state=directory
+- name: Creates work directory
+  file: path="{{ imads.data_root }}/pred_data/work" state=directory mode="a+rwx"
 
 # Create database
 - include: tasks/setup_postgres.yml db_state=reloaded db_config=normal
