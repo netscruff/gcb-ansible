@@ -52,7 +52,4 @@
   tags:
     - reboot
 
-    - debug: msg="System {{ inventory_hostname }} has come back from reboot"
-  when: reboot_hint.stdout.find("reboot") != -1
-  tags:
-    - reboot
+- include: auth.yml

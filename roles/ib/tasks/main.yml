@@ -18,19 +18,53 @@
   with_items:
     - rdma
 
-- name: Reboot
+- name: Check if ib0 exists
+  command: /sbin/ip link show ib0
+  register: result
+  ignore_errors: true
+
+- name: reboot if inteface ib0 does not exist
   become: yes
-  become_method: sudo
   shell: "sleep 1 && shutdown -r now 'Ansible updates triggered'"
   async: 1
   poll: 0
   ignore_errors: true
-  when: (install_ib_packages == "changed") or (install_ib_group == "changed")
+  when: result.stderr.find("does not exist") != -1
+  tags:
+    - reboot
 
 - name: Waiting for server to come back
   local_action: wait_for delay=15 host={{ inventory_hostname }}
                 state=started port=22
+  when: result.stderr.find("does not exist") != -1
   tags:
     - reboot
 
 - debug: msg="System {{ inventory_hostname }} has come back from reboot"
+
+- name: ifcfg for ib0
+  action: template src=ifcfg-ib0.j2 dest=/etc/sysconfig/network-scripts/ifcfg-ib0
+
+- name: route multicast traffic over ib
+  copy:
+    src: route-ib0
+    dest: /etc/sysconfig/network-scripts/route-ib0
+    owner: root
+    group: root
+    mode: 0644
+
+- name: stop ib0 interface
+  command: /sbin/ifdown ib0
+
+- name: start ib0 interface
+  command: /sbin/ifup ib0
+
+- name: iptables configuration
+  action: template src=iptables.j2 dest=/etc/sysconfig/iptables
+  tags:
+    - firewall
+
+- name: restart iptables
+  service: name=iptables state=restarted
+  tags:
+    - firewall

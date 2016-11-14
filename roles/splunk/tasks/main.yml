@@ -1,4 +1,7 @@
 ---
+- name: Create splunk group
+  group: name=splunk state=present gid=82
+
 - name: Install splunk forwarder
   yum:
     name: splunkforwarder

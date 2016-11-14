@@ -7,3 +7,6 @@
     - role: gpfs
     - role: besclient
     - role: splunk
+    - role: ViaSat.duounix
+    - role: duo
+    - role: ganglia

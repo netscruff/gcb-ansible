@@ -25,11 +25,11 @@ chpass_provider = krb5
 ldap_schema = rfc2307bis
 ldap_uri = ldaps://idms-authdir.oit.duke.edu
 ldap_search_base = dc=duke,dc=edu
-ldap_user_search_base = {{ sssd.user_search_base }}
-ldap_group_search_base = {{ sssd.group_search_base }}
-ldap_default_bind_dn = {{ sssd.bind_dn }}
+ldap_user_search_base = {{ sssd_conf.user_search_base }}
+ldap_group_search_base = {{ sssd_conf.group_search_base }}
+ldap_default_bind_dn = {{ sssd_conf.bind_dn }}
 ldap_default_authtok_type = obfuscated_password
-ldap_default_authtok = {{ sssd.authtok }}
+ldap_default_authtok = {{ sssd_conf.authtok }}
 krb5_realm = ACPUB.DUKE.EDU
 krb5_server = kaserv1.acpub.duke.edu:88,kaserv2.acpub.duke.edu:88
 

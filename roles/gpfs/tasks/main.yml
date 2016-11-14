@@ -8,7 +8,7 @@
 - name: Install GPFS rpms
   yum:
     name: gpfs.{{item}}
-    state: present
+    state: latest
     update_cache: yes
   with_items:
     - base.x86_64
@@ -37,4 +37,3 @@
   authorized_key:
     user: root
     key: "{{ lookup('file', lookup('env', 'HOME') + '/.ssh/nsd_id_rsa.pub') }}"
-

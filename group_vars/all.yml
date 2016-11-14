@@ -10,3 +10,15 @@ base_packages:
     - nscd
     - sssd-krb5
     - pam_krb5
+
+duounix_integration_key: DIJO6957OCT52AQTKI94 
+duounix_secret_key: QPJ20tivPICxXXT8spBUS64zWdWtfSDr3ADV0bHX 
+duounix_api_hostname: api-79917798.duosecurity.com
+
+deploy:
+  user: gcbdeploy
+  group: gcbdeploy
+  home_dir: /home/
+  uid: 80
+  gid: 80
+  take_ownership_of_tmp: false

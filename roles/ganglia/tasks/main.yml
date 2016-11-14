@@ -1,0 +1,23 @@
+---
+
+- name: Install ganglia
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - ganglia
+    - ganglia-gmond
+
+- name: copy ganglia configuration
+  copy:
+    src: gmond.conf
+    dest: /etc/ganglia/gmond.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Enable service
+  service:
+    name: gmond
+    state: restarted
+    enabled: yes

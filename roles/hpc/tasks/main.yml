@@ -12,23 +12,9 @@
 - name: copy hosts file
   copy: src=hosts dest=/etc/
 
-- name: ifcfg for ib0
-  action: template src=ifcfg-ib0.j2 dest=/etc/sysconfig/network-scripts/ifcfg-ib0
-
-- name: iptables configuration
-  action: template src=iptables.j2 dest=/etc/sysconfig/iptables
-
-- name: stop ib0 interface
-  command: /sbin/ifdown ib0
-
-- name: start ib0 interface
-  command: /sbin/ifup ib0
-
-- name: restart iptables
-  service: name=iptables state=restarted
-
 - name: Start GPFS
   command: /usr/lpp/mmfs/bin/mmstartup
+  ignore_errors: yes
 
 - name: Wait for GPFS
   wait_for: path=/gpfs/fs0/data
@@ -48,9 +34,13 @@
     name: munge
     state: present
 
+- name: install slurm plugins
+  yum:
+    name: /data/itlab/slurm/slurm-plugins-14.11.9-1.el6.x86_64.rpm
+
 - name: install slurm base
   yum:
-    name: /data/itlab/slurm/slurm-16.05.6-1.el6.x86_64.rpm
+    name: /data/itlab/slurm/slurm-14.11.9-1.el6.x86_64.rpm
     state: present
 
 - name: install slurm
@@ -58,13 +48,12 @@
     name: "{{item}}"
     state: present
   with_items:
-    - slurm-devel
-    - slurm-munge
-    - slurm-pam_slurm
-    - slurm-perlapi
-    - slurm-plugins
-    - slurm-sjobexit
-    - slurm-sjstat
+    - /data/itlab/slurm/slurm-devel-14.11.9-1.el6.x86_64.rpm
+    - /data/itlab/slurm/slurm-munge-14.11.9-1.el6.x86_64.rpm
+    - /data/itlab/slurm/slurm-pam_slurm-14.11.9-1.el6.x86_64.rpm
+    - /data/itlab/slurm/slurm-perlapi-14.11.9-1.el6.x86_64.rpm
+    - /data/itlab/slurm/slurm-sjobexit-14.11.9-1.el6.x86_64.rpm
+    - /data/itlab/slurm/slurm-sjstat-14.11.9-1.el6.x86_64.rpm
 
 - name: install additional packages
   yum:
@@ -126,3 +115,9 @@
     src: /gpfs/fs0/data/itlab
     dest: /nfs/software
     state: link
+
+- name: copy authorized key for hardac-sm
+  authorized_key:
+    user: root
+    key: "{{ lookup('file', lookup('env', 'HOME') + '/.ssh/sm_id_rsa.pub') }}"
+

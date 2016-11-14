@@ -1,0 +1,8 @@
+---
+
+- name: Turn on duo
+  lineinfile: dest=/etc/ssh/sshd_config
+              line="ForceCommand /usr/sbin/login_duo"
+              state=present
+  notify: restart_sshd
+
